@@ -1,0 +1,19 @@
+{
+    "chainName": "PAXI",
+    "api": "https://paxi-api.crxanode.me",
+    "rpc": "https://paxi-rpc.crxanode.me",
+    "grpc": "paxi-grpc.crxanode.me:443",
+    "peer": "abcd1234@203.0.113.11:26656",
+    "addrbook": "https://crxanode.me/paxi/addrbook.json",
+    "snapshots": [
+        {
+            "label": "full",
+            "height": "12,345,678",
+            "type": "tar.lz4",
+            "sizeBytes": 1234567890,
+            "url": "https://cdn.example.com/paxi/snapshots/latest.tar.lz4",
+            "checksum": "sha256:deadbeef...",
+            "availableAt": "2025-09-22T10:20:00Z"
+        }
+    ]
+}
