@@ -9,6 +9,7 @@ export interface Snapshot {
 }
 
 export interface ChainService {
+  [x: string]: string;
   chainName: string;
   api: string;
   rpc: string;

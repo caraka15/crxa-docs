@@ -7,11 +7,21 @@ export const Header = () => {
   return (
     <header className="navbar bg-base-100 border-b border-base-300 sticky top-0 z-50">
       <div className="navbar-start">
-        <Link to="/" className="text-xl font-bold text-primary hover:text-secondary transition-colors">
-          🌌 Cosmos Docs
+        <Link to="/" className="flex items-center gap-3 text-xl font-bold text-primary hover:text-secondary transition-colors ml-5">
+          <img
+            src="/logo.png"
+            alt="Crxanode logo"
+            className="w-8 h-8 rounded-full"
+            onError={(e) => {
+              e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiNGRjY1MDAiLz4KPHRleHQgeD0iMTYiIHk9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjE0Ij5DPC90ZXh0Pgo8L3N2Zz4K';
+            }}
+          />
+          <span>
+            Crxanode Docs
+          </span>
         </Link>
       </div>
-      
+
       <div className="navbar-end">
         <button
           onClick={toggleTheme}
