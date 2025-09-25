@@ -3,6 +3,7 @@ import { useChains } from '../hooks/useChains';
 import { Header } from '../components/Header';
 import { EndpointCard } from '../components/EndpointCard';
 import { SnapshotTable } from '../components/SnapshotTable';
+import { SnapshotCommand } from '../components/SnapshotCommand';
 import { Logo } from '../components/Logo';
 import { PingBadge } from '../components/PingBadge';
 import { Footer } from '../components/Footer';
@@ -201,6 +202,7 @@ export const ServicePage = () => {
           <div>
             <h2 className="text-2xl font-bold text-base-content mb-6">Snapshots</h2>
             <SnapshotTable snapshots={service.snapshots} />
+            <SnapshotCommand snapshots={service.snapshots} />
           </div>
         </div>
       </div>

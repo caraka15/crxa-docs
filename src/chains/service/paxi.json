@@ -8,13 +8,22 @@
     "genesis": "https://files.crxanode.me/paxi/genesis.json",
     "snapshots": [
         {
-            "label": "full",
+            "label": "latest",
             "height": "1043534",
             "type": "tar.lz4",
             "sizeBytes": 5474807823,
             "url": "https://files.crxanode.me/paxi/paxi-latest.tar.lz4",
             "checksum": "sha256:6f83f91b2b3d883e125297145fab42dee4a1e147efdcbedddaa0fc733aada2d9",
             "availableAt": "2025-09-25T11:51:18Z"
+        },
+        {
+            "label": "old",
+            "height": "1043190",
+            "type": "tar.lz4",
+            "sizeBytes": 5449064227,
+            "url": "https://files.crxanode.me/paxi/paxi-old.tar.lz4",
+            "checksum": "sha256:e3d1d3057ed40738c7f45a9c683ce3f71f19418f2d0ede9f96b000ad4c1723f1",
+            "availableAt": "2025-09-25T11:11:14Z"
         }
     ]
 }

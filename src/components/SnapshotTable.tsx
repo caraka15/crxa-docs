@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { Snapshot } from '../types/chain';
+import { CopyButton } from './CopyButton';
 
 dayjs.extend(relativeTime);
 
@@ -39,6 +40,7 @@ export const SnapshotTable = ({ snapshots }: SnapshotTableProps) => {
                 <th>Size</th>
                 <th>Format</th>
                 <th>Available</th>
+                <th>Checksum</th>
                 <th>Download</th>
               </tr>
             </thead>
@@ -66,6 +68,21 @@ export const SnapshotTable = ({ snapshots }: SnapshotTableProps) => {
                     </div>
                   </td>
                   <td>
+                    {snapshot.checksum && (
+                      <div className="flex items-center gap-2 font-mono text-xs">
+                        <a 
+                          href={`${snapshot.url}.sha256`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="link link-hover"
+                        >
+                          {snapshot.checksum.split(':')[1].substring(0, 12)}...
+                        </a>
+                        <CopyButton text={snapshot.checksum.split(':')[1]} />
+                      </div>
+                    )}
+                  </td>
+                  <td>
                     <a 
                       href={snapshot.url}
                       target="_blank"
@@ -80,17 +97,6 @@ export const SnapshotTable = ({ snapshots }: SnapshotTableProps) => {
             </tbody>
           </table>
         </div>
-        
-        {snapshots.length > 0 && (
-          <div className="p-4 border-t border-base-300">
-            <div className="text-sm text-base-content/70">
-              <p className="mb-1">
-                <strong>Checksum:</strong> <code className="text-xs">{snapshots[0].checksum}</code>
-              </p>
-              <p>Always verify checksums before using snapshots.</p>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
