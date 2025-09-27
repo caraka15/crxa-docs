@@ -7,6 +7,12 @@ export default defineConfig({
   server: {
     host: "::",
     port: 8080,
+    proxy: {
+      '/_vercel/insights/script.js': {
+        target: 'https://docs.crxanode.me',
+        changeOrigin: true,
+      },
+    },
   },
   plugins: [react()],
   resolve: {
