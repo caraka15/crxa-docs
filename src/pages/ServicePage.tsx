@@ -1,3 +1,4 @@
+import { BlockHeight } from '../components/BlockHeight';
 import { useParams, Link } from 'react-router-dom';
 import { useChains } from '../hooks/useChains';
 import { Header } from '../components/Header';
@@ -76,9 +77,14 @@ export const ServicePage = () => {
                 className="w-16 h-16"
               />
               <div>
-                <h1 className="text-3xl font-bold text-base-content mb-2">
-                  {service.chainName} Service
-                </h1>
+
+
+                <div className="flex items-center gap-4">
+                  <h1 className="text-3xl font-bold text-base-content">
+                    {service.chainName} Service
+                  </h1>
+                  <BlockHeight rpcUrl={service.rpc} />
+                </div>
                 <p className="text-base-content/70">
                   API endpoints, snapshots, and network information
                 </p>
@@ -201,8 +207,7 @@ export const ServicePage = () => {
           {/* Snapshots Section */}
           <div>
             <h2 className="text-2xl font-bold text-base-content mb-6">Snapshots</h2>
-            <SnapshotTable snapshots={service.snapshots} />
-            <SnapshotCommand snapshots={service.snapshots} />
+            <SnapshotTable />
           </div>
         </div>
       </div>

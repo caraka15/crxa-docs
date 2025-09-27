@@ -1,4 +1,5 @@
 export interface Snapshot {
+  format: ReactNode;
   label: string;
   height: string;
   type: string;
