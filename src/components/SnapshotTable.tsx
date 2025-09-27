@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { Snapshot } from '../types/chain';
+import { SnapshotCopyButton } from './SnapshotCopyButton';
 import { CopyButton } from './CopyButton';
 import { SnapshotCommand } from './SnapshotCommand';
 
@@ -52,31 +53,12 @@ export const SnapshotTable = () => {
     fetchSnapshots();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="card bg-base-200">
-        <div className="card-body text-center py-8">
-          <span className="loading loading-spinner loading-md text-primary"></span>
-          <p className="text-base-content/70 mt-4">Loading snapshots...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="card bg-base-200">
-        <div className="card-body text-center py-8">
-          <p className="text-error">Error loading snapshots: {error}</p>
-        </div>
-      </div>
-    );
-  }
+  
 
   
   if (!snapshots || snapshots.length === 0) {
     return (
-      <div className="card bg-base-200">
+      <div className="card bg-base-200/80 backdrop-blur-sm">
         <div className="card-body text-center py-8">
           <p className="text-base-content/70">No snapshots available</p>
         </div>
@@ -86,7 +68,7 @@ export const SnapshotTable = () => {
 
   return (
     <>
-      <div className="card bg-base-200">
+      <div className="card bg-base-200/80 backdrop-blur-sm">
         <div className="card-body p-0">
           <div className="overflow-x-auto">
             <table className="table table-zebra">
@@ -140,14 +122,17 @@ export const SnapshotTable = () => {
                       )}
                     </td>
                     <td>
-                      <a
-                        href={snapshot.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-primary btn-sm"
-                      >
-                        Download
-                      </a>
+                      <div className="flex items-center gap-2">
+                        <a
+                          href={snapshot.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn btn-primary btn-sm"
+                        >
+                          Download
+                        </a>
+                        <SnapshotCopyButton text={snapshot.url} />
+                      </div>
                     </td>
                   </tr>
                 ))}

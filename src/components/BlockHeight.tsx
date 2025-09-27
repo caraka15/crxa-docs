@@ -23,6 +23,7 @@ function toWsUrl(httpUrl: string) {
 export const BlockHeight = ({ rpcUrl, pollMs = 5000 }: BlockHeightProps) => {
   const [blockHeight, setBlockHeight] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [hasAttempted, setHasAttempted] = useState(false);
 
   const wsUrl = useMemo(() => toWsUrl(rpcUrl), [rpcUrl]);
   const wsRef = useRef<WebSocket | null>(null);
@@ -35,6 +36,7 @@ export const BlockHeight = ({ rpcUrl, pollMs = 5000 }: BlockHeightProps) => {
     // --- helper: fetch status via HTTP (no cache)
     const fetchStatus = async () => {
       try {
+        setHasAttempted(true);
         abortRef.current?.abort();
         const ac = new AbortController();
         abortRef.current = ac;
@@ -53,10 +55,17 @@ export const BlockHeight = ({ rpcUrl, pollMs = 5000 }: BlockHeightProps) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         const h = data?.result?.sync_info?.latest_block_height;
-        if (h) setBlockHeight(String(h));
+        if (h) {
+          setBlockHeight(String(h));
+          setError(null);
+        }
       } catch (e: any) {
-        // simpan error hanya kalau belum pernah dapat blockHeight
-        if (!blockHeight) setError(e?.message || "Fetch error");
+        // Only show error after some time has passed
+        setTimeout(() => {
+          if (!blockHeight && hasAttempted) {
+            setError(e?.message || "Connection failed");
+          }
+        }, 3000);
       }
     };
 
@@ -132,8 +141,8 @@ export const BlockHeight = ({ rpcUrl, pollMs = 5000 }: BlockHeightProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rpcUrl, wsUrl, pollMs]);
 
-  if (error && !blockHeight) {
-    return <span className="text-error text-xs">Error</span>;
+  if (error && !blockHeight && hasAttempted) {
+    return <span className="text-error text-xs">Offline</span>;
   }
   if (!blockHeight) {
     return <span className="loading loading-spinner loading-xs" />;

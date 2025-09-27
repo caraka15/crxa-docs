@@ -1,23 +1,32 @@
+import { ReactNode } from 'react';
+
 export interface Snapshot {
-  format: ReactNode;
+  format: string;
   label: string;
-  height: string;
-  type: string;
+  height: string | number;
+  type?: string;
   sizeBytes: number;
   url: string;
   checksum: string;
   availableAt: string;
 }
 
+export interface SnapshotResponse {
+  generated_at: string;
+  items: Snapshot[];
+  peers: string | string[];
+}
+
 export interface ChainService {
-  [x: string]: string;
   chainName: string;
   api: string;
   rpc: string;
   grpc: string;
   peer: string;
   addrbook: string;
-  snapshots: Snapshot[];
+  genesis?: string;
+  snapshots?: string; // URL to snapshots API
+  valoper?: string;
 }
 
 export interface ChainData {

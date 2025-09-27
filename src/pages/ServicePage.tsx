@@ -1,13 +1,12 @@
+import { CopyButton } from '../components/CopyButton';
 import { BlockHeight } from '../components/BlockHeight';
 import { useParams, Link } from 'react-router-dom';
 import { useChains } from '../hooks/useChains';
-import { Header } from '../components/Header';
 import { EndpointCard } from '../components/EndpointCard';
 import { SnapshotTable } from '../components/SnapshotTable';
 import { SnapshotCommand } from '../components/SnapshotCommand';
 import { Logo } from '../components/Logo';
 import { PingBadge } from '../components/PingBadge';
-import { Footer } from '../components/Footer';
 
 export const ServicePage = () => {
   const { chain: chainSlug } = useParams<{ chain: string }>();
@@ -17,24 +16,21 @@ export const ServicePage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-base-100 flex flex-col">
-        <Header />
+      <div className="min-h-screen flex flex-col bg-transparent">
         <div className="flex-1 container mx-auto px-4 py-8">
           <div className="flex justify-center items-center py-20">
             <span className="loading loading-spinner loading-lg text-primary"></span>
           </div>
         </div>
-        <Footer />
       </div>
     );
   }
 
   if (!chain || !chain.service) {
     return (
-      <div className="min-h-screen bg-base-100 flex flex-col">
-        <Header />
+      <div className="min-h-screen flex flex-col bg-transparent">
         <div className="flex-1 container mx-auto px-4 py-8">
-          <div className="alert alert-error">
+          <div className="alert alert-error bg-base-200/80 backdrop-blur-sm">
             <svg className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -46,7 +42,6 @@ export const ServicePage = () => {
             </Link>
           </div>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -54,11 +49,9 @@ export const ServicePage = () => {
   const service = chain.service;
 
   return (
-    <div className="min-h-screen bg-base-100 flex flex-col">
-      <Header />
-
+    <div className="min-h-screen flex flex-col bg-transparent">
       <div className="flex-1">
-        <div className="container mx-auto px-4 py-8">
+        <div className="w-full max-w-none px-4 sm:px-6 lg:px-8 py-8">{/* Rest stays the same */}
           {/* Breadcrumb */}
           <div className="breadcrumbs text-sm mb-6">
             <ul>
@@ -83,7 +76,7 @@ export const ServicePage = () => {
                   <h1 className="text-3xl font-bold text-base-content">
                     {service.chainName} Service
                   </h1>
-                  <BlockHeight rpcUrl={service.rpc} />
+
                 </div>
                 <p className="text-base-content/70">
                   API endpoints, snapshots, and network information
@@ -92,6 +85,16 @@ export const ServicePage = () => {
             </div>
 
             <div className="flex gap-2 mt-4 md:mt-0">
+              {service.valoper && (
+                <a
+                  href={`https://explorer.crxanode.me/${chainSlug}/staking/${service.valoper}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-primary btn-outline"
+                >
+                  My Validator
+                </a>
+              )}
               {chain.guide && (
                 <Link
                   to={`/${chainSlug}/guide`}
@@ -105,9 +108,12 @@ export const ServicePage = () => {
 
           {/* Endpoints Grid */}
           <div className="mb-12">
-            <h2 className="text-2xl font-bold text-base-content mb-6">Network Endpoints</h2>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-base-content">Network Endpoints</h2>
+              <BlockHeight rpcUrl={service.rpc} />
+            </div>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              <div className="card bg-base-200 hover:bg-base-300 transition-colors group">
+              <div className="card bg-base-200/80 backdrop-blur-sm hover:bg-base-300/80 transition-colors group">
                 <div className="card-body p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -124,19 +130,11 @@ export const ServicePage = () => {
                         <p className="text-sm text-base-content/70 font-mono break-all">{service.api}</p>
                       </div>
                     </div>
-                    <button
-                      onClick={() => navigator.clipboard.writeText(service.api)}
-                      className="btn btn-ghost btn-sm opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
-                      title="Copy to clipboard"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                      </svg>
-                    </button>
+                    <CopyButton text={service.api} />
                   </div>
                 </div>
               </div>
-              <div className="card bg-base-200 hover:bg-base-300 transition-colors group">
+              <div className="card bg-base-200/80 backdrop-blur-sm hover:bg-base-300/80 transition-colors group">
                 <div className="card-body p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -153,15 +151,7 @@ export const ServicePage = () => {
                         <p className="text-sm text-base-content/70 font-mono break-all">{service.rpc}</p>
                       </div>
                     </div>
-                    <button
-                      onClick={() => navigator.clipboard.writeText(service.rpc)}
-                      className="btn btn-ghost btn-sm opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
-                      title="Copy to clipboard"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                      </svg>
-                    </button>
+                    <CopyButton text={service.rpc} />
                   </div>
                 </div>
               </div>
@@ -211,8 +201,6 @@ export const ServicePage = () => {
           </div>
         </div>
       </div>
-
-      <Footer />
     </div>
   );
 };

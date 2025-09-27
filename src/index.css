@@ -10,7 +10,7 @@
   }
 
   body {
-    @apply bg-base-100 text-base-content;
+    @apply text-base-content;
   }
 
   /* Code blocks styling */

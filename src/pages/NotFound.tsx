@@ -4,7 +4,7 @@ import { Header } from "../components/Header";
 const NotFound = () => {
   return (
     <div className="min-h-screen bg-base-100">
-      <Header />
+      {/* <Header /> */}
       <div className="container mx-auto px-4 py-16">
         <div className="text-center">
           <div className="text-8xl mb-4">🔍</div>

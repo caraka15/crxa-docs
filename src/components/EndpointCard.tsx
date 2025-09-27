@@ -8,7 +8,7 @@ interface EndpointCardProps {
 
 export const EndpointCard = ({ label, value, icon }: EndpointCardProps) => {
   return (
-    <div className="card bg-base-200 hover:bg-base-300 transition-colors group">
+    <div className="card bg-base-200/80 backdrop-blur-sm hover:bg-base-300/80 transition-colors group">
       <div className="card-body p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">

@@ -1,4 +1,5 @@
 import React from 'react'
+import { motion } from 'framer-motion'
 
 interface PingBadgeProps {
   url: string;
@@ -9,10 +10,17 @@ interface PingBadgeProps {
 export const PingBadge = ({ url, label, className = "" }: PingBadgeProps) => {
   const [ms, setMs] = React.useState<number | null>(null)
   const [ok, setOk] = React.useState<boolean | null>(null)
+  const [refreshKey, setRefreshKey] = React.useState(0)
+
+  const refreshPing = () => {
+    setRefreshKey(prevKey => prevKey + 1)
+  }
 
   React.useEffect(() => {
     let alive = true
       ; (async () => {
+        setMs(null)
+        setOk(null)
         const t0 = performance.now()
         try {
           await fetch(url, { method: 'HEAD', mode: 'no-cors' })
@@ -29,16 +37,20 @@ export const PingBadge = ({ url, label, className = "" }: PingBadgeProps) => {
         }
       })()
     return () => { alive = false }
-  }, [url])
+  }, [url, refreshKey])
 
   const tone = ok === null ? "badge-ghost"
     : ok ? "badge-success"
       : "badge-error"
 
   return (
-    <span className={`badge ${tone} gap-2 ${className}`}>
-      {/* <span>{label}</span> */}
+    <motion.span
+      className={`badge ${tone} gap-2 cursor-pointer hover:opacity-75 ${className}`}
+      onClick={refreshPing}
+      whileTap={{ scale: 0.95 }}
+    >
+      {/* <span>{label} */}
       <span>{ms !== null ? `${ms} ms` : '—'}</span>
-    </span>
+    </motion.span>
   )
 }

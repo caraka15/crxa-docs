@@ -12,18 +12,16 @@ export const useChains = () => {
         setLoading(true);
         
         // Auto-index service files
-        const serviceModules = import.meta.glob('/src/chains/service/*.json', { 
-          eager: true, 
-          as: 'json' 
-        });
-        
-        // Auto-index guide files  
-        const guideModules = import.meta.glob('/src/chains/guide/*.md', { 
-          eager: true, 
-          as: 'raw' 
-        });
-
-        const chainData: ChainData[] = [];
+                        const serviceModules = import.meta.glob('./../chains/service/*.json', {
+                          eager: true,
+                          as: 'json'
+                        });
+                        
+                        // Auto-index guide files  
+                        const guideModules = import.meta.glob('./../chains/guide/*.md', {
+                          eager: true,
+                          as: 'raw'
+                        });        const chainData: ChainData[] = [];
         const processedSlugs = new Set<string>();
 
         // Process service files

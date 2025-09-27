@@ -5,4 +5,6 @@
     "rpc": "https://paxi-rpc.crxanode.me",
     "grpc": "paxi-grpc.crxanode.me:443",
     "peer": "abcd1234@203.0.113.11:26656",
-    "addrbook": "https://crxanode.me/paxi/addrbook.json"
+    "addrbook": "https://crxanode.me/paxi/addrbook.json",
+    "valoper": "paxivaloper1xxxxxxxxx"
+}
