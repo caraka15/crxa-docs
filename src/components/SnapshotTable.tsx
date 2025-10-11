@@ -25,7 +25,7 @@ export const SnapshotTable = () => {
     const fetchSnapshots = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`https://files.crxanode.me/paxi/index.json?t=${new Date().getTime()}`);
+        const response = await fetch(`https://cdn.crxanode.me/paxi/index.json?t=${new Date().getTime()}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -36,7 +36,7 @@ export const SnapshotTable = () => {
           ...item,
           sizeBytes: item.size_bytes,
           availableAt: item.mtime,
-          url: `https://files.crxanode.me${item.download}`,
+          url: `https://cdn.crxanode.me${item.download}`,
           checksum: `sha256:${item.checksum_sha256}`
         })));
       } catch (e) {
@@ -53,9 +53,9 @@ export const SnapshotTable = () => {
     fetchSnapshots();
   }, []);
 
-  
 
-  
+
+
   if (!snapshots || snapshots.length === 0) {
     return (
       <div className="card bg-base-200/80 backdrop-blur-sm">
