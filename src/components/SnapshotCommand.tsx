@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { Snapshot } from '../types/chain';
+import { Snapshot, ChainService } from '../types/chain';
 import { CodeBlock } from './CodeBlock';
 
 interface SnapshotCommandProps {
   snapshots: Snapshot[];
+  service: ChainService;
 }
 
-export const SnapshotCommand = ({ snapshots }: SnapshotCommandProps) => {
+export const SnapshotCommand = ({ snapshots, service }: SnapshotCommandProps) => {
   const [selectedLabel, setSelectedLabel] = useState('latest');
 
   if (!snapshots || snapshots.length === 0) {
@@ -22,18 +23,20 @@ export const SnapshotCommand = ({ snapshots }: SnapshotCommandProps) => {
     oldSnapshot ||
     snapshots[0];
 
-
   if (!selectedSnapshot) {
     return null;
   }
 
+  const chainNameLower = service.chainName.toLowerCase();
+  const dir = service.dir || `~/.${chainNameLower}`;
+
   const command = `sudo apt install lz4 -y
-sudo systemctl stop paxid
-cp ~/go/bin/paxi/data/priv_validator_state.json ~/go/bin/paxi/priv_validator_state.json.backup
-paxid tendermint unsafe-reset-all --home ~/go/bin/paxi --keep-addr-book
-curl -L ${selectedSnapshot.url} | lz4 -dc - | tar -xf - -C ~/go/bin/paxi
-mv ~/go/bin/paxi/priv_validator_state.json.backup ~/go/bin/paxi/data/priv_validator_state.json
-sudo systemctl restart paxid && sudo journalctl -u paxid -fo cat`;
+sudo systemctl stop ${chainNameLower}d
+cp ${dir}/data/priv_validator_state.json ${dir}/priv_validator_state.json.backup
+${chainNameLower}d tendermint unsafe-reset-all --home ${dir} --keep-addr-book
+curl -L ${selectedSnapshot.url} | lz4 -dc - | tar -xf - -C ${dir}
+mv ${dir}/priv_validator_state.json.backup ${dir}/data/priv_validator_state.json
+sudo systemctl restart ${chainNameLower}d && sudo journalctl -u ${chainNameLower}d -fo cat`;
 
   return (
     <div className="mt-8">

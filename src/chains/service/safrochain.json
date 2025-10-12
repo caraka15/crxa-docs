@@ -6,5 +6,6 @@
     "peer": "a93943e7b145eee76860e70aa042aabda699ab43@safrochain-rpc.crxanode.me",
     "addrbook": "https://cdn.crxanode.me/safrochain/addrbook.json",
     "genesis": "https://cdn.crxanode.me/safrochain/genesis.json",
-    "valoper": "addr_safro1nr0m7gw245rtr5e3vev0p9t5278qj05s6ev5tm"
+    "valoper": "addr_safro1nr0m7gw245rtr5e3vev0p9t5278qj05s6ev5tm",
+    "dir": "~/.safrochain"
 }

@@ -27,9 +27,10 @@ export interface ChainService {
   genesis?: string;
   snapshots?: string; // URL to snapshots API
   valoper?: string;
+  dir?: string;
 }
 
-export interface ChainData {
+export interface Chain {
   slug: string;
   service: ChainService | null;
   guide: string | null;

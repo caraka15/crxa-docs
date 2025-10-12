@@ -197,7 +197,7 @@ export const ServicePage = () => {
           {/* Snapshots Section */}
           <div>
             <h2 className="text-2xl font-bold text-base-content mb-6">Snapshots</h2>
-            <SnapshotTable />
+            <SnapshotTable chain={chain} />
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { Snapshot } from '../types/chain';
+import { Snapshot, Chain } from '../types/chain';
 import { SnapshotCopyButton } from './SnapshotCopyButton';
 import { CopyButton } from './CopyButton';
 import { SnapshotCommand } from './SnapshotCommand';
@@ -16,22 +16,25 @@ const formatBytes = (bytes: number): string => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
 
-export const SnapshotTable = () => {
+interface SnapshotTableProps {
+  chain: Chain;
+}
+
+export const SnapshotTable = ({ chain }: SnapshotTableProps) => {
   const [snapshots, setSnapshots] = useState<Snapshot[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchSnapshots = async () => {
+      if (!chain || !chain.service) return;
       try {
         setLoading(true);
-        const response = await fetch(`https://cdn.crxanode.me/paxi/index.json?t=${new Date().getTime()}`);
+        const response = await fetch(`https://cdn.crxanode.me/${chain.service.chainName.toLowerCase()}/index.json?t=${new Date().getTime()}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        // const correctedText = text.replace(/("peers":\s*\[\s*)([^"\s\]]+)(\s*\])/g, '$1"$2"$3');
-        // const data = JSON.parse(correctedText);
         setSnapshots(data.items.map((item: any) => ({
           ...item,
           sizeBytes: item.size_bytes,
@@ -51,10 +54,27 @@ export const SnapshotTable = () => {
     };
 
     fetchSnapshots();
-  }, []);
+  }, [chain]);
 
+  if (loading) {
+    return (
+      <div className="card bg-base-200/80 backdrop-blur-sm">
+        <div className="card-body text-center py-8">
+          <span className="loading loading-spinner loading-lg text-primary"></span>
+        </div>
+      </div>
+    );
+  }
 
-
+  if (error) {
+    return (
+      <div className="card bg-base-200/80 backdrop-blur-sm">
+        <div className="card-body text-center py-8">
+          <p className="text-error">Error fetching snapshots: {error}</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!snapshots || snapshots.length === 0) {
     return (
@@ -141,7 +161,7 @@ export const SnapshotTable = () => {
           </div>
         </div>
       </div>
-      <SnapshotCommand snapshots={snapshots} />
+      <SnapshotCommand snapshots={snapshots} service={chain.service} />
     </>
   );
 };
