@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Snapshot, ChainService } from '../types/chain';
 import { CodeBlock } from './CodeBlock';
 
@@ -9,6 +9,13 @@ interface SnapshotCommandProps {
 
 export const SnapshotCommand = ({ snapshots, service }: SnapshotCommandProps) => {
   const [selectedLabel, setSelectedLabel] = useState('latest');
+  const chainNameLower = service.chainName.toLowerCase();
+  const defaultDir = service.dir || `~/.${chainNameLower}`;
+  const [customDir, setCustomDir] = useState(defaultDir);
+
+  useEffect(() => {
+    setCustomDir(defaultDir);
+  }, [defaultDir]);
 
   if (!snapshots || snapshots.length === 0) {
     return null;
@@ -27,15 +34,12 @@ export const SnapshotCommand = ({ snapshots, service }: SnapshotCommandProps) =>
     return null;
   }
 
-  const chainNameLower = service.chainName.toLowerCase();
-  const dir = service.dir || `~/.${chainNameLower}`;
-
   const command = `sudo apt install lz4 -y
 sudo systemctl stop ${chainNameLower}d
-cp ${dir}/data/priv_validator_state.json ${dir}/priv_validator_state.json.backup
-${chainNameLower}d tendermint unsafe-reset-all --home ${dir} --keep-addr-book
-curl -L ${selectedSnapshot.url} | lz4 -dc - | tar -xf - -C ${dir}
-mv ${dir}/priv_validator_state.json.backup ${dir}/data/priv_validator_state.json
+cp ${customDir}/data/priv_validator_state.json ${customDir}/priv_validator_state.json.backup
+${chainNameLower}d tendermint unsafe-reset-all --home ${customDir} --keep-addr-book
+curl -L ${selectedSnapshot.url} | lz4 -dc - | tar -xf - -C ${customDir}
+mv ${customDir}/priv_validator_state.json.backup ${customDir}/data/priv_validator_state.json
 sudo systemctl restart ${chainNameLower}d && sudo journalctl -u ${chainNameLower}d -fo cat`;
 
   return (
@@ -61,6 +65,19 @@ sudo systemctl restart ${chainNameLower}d && sudo journalctl -u ${chainNameLower
           )}
         </div>
       </div>
+
+      <div className="form-control mb-4">
+        <label className="label">
+          <span className="label-text">Custom Directory</span>
+        </label>
+        <input
+          type="text"
+          value={customDir}
+          onChange={(e) => setCustomDir(e.target.value)}
+          className="input input-bordered w-full"
+        />
+      </div>
+
       <CodeBlock>{command}</CodeBlock>
     </div>
   );
