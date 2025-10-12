@@ -70,12 +70,20 @@ sudo systemctl restart ${chainNameLower}d && sudo journalctl -u ${chainNameLower
         <label className="label">
           <span className="label-text">Custom Directory</span>
         </label>
-        <input
-          type="text"
-          value={customDir}
-          onChange={(e) => setCustomDir(e.target.value)}
-          className="input input-bordered w-full"
-        />
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={customDir}
+            onChange={(e) => setCustomDir(e.target.value)}
+            className="input input-bordered w-full"
+          />
+          <button 
+            className="btn btn-ghost"
+            onClick={() => setCustomDir(defaultDir)}
+          >
+            Default
+          </button>
+        </div>
       </div>
 
       <CodeBlock>{command}</CodeBlock>
