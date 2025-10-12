@@ -73,8 +73,8 @@ safrochaind config set client node tcp://localhost:${SAFRO_PORT}657
 ## 🌱 Download Genesis \& Addrbook
 
 ```bash
-curl -Ls https://cdn.crxanode.me/list/testnet/safrochain/genesis.json > $HOME/.safrochain/config/genesis.json
-curl -Ls https://cdn.crxanode.me/list/testnet/safrochain/addrbook.json > $HOME/.safrochain/config/addrbook.json
+curl -Ls https://cdn.crxanode.me/safrochain/genesis.json > $HOME/.safrochain/config/genesis.json
+curl -Ls https://cdn.crxanode.me/safrochain/addrbook.json > $HOME/.safrochain/config/addrbook.json
 ```
 
 

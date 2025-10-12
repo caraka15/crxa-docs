@@ -2,26 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* General scrollbar styling */
-::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
-}
-
-::-webkit-scrollbar-track {
-  @apply bg-base-200;
-}
-
-::-webkit-scrollbar-thumb {
-  @apply bg-secondary rounded-lg border-4 border-solid border-base-200;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-primary;
-}
-
 /* Custom styles for documentation site */
 @layer base {
+
   /* Theme transition */
   * {
     transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
@@ -46,7 +29,7 @@
   }
 
   .prose h1,
-  .prose h2, 
+  .prose h2,
   .prose h3,
   .prose h4,
   .prose h5,
@@ -72,33 +55,25 @@
 }
 
 @layer components {
+
   /* Copy button animation */
   .copy-success {
     animation: copy-pulse 0.3s ease-in-out;
   }
 
   @keyframes copy-pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
+    0% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.05);
+    }
+
+    100% {
+      transform: scale(1);
+    }
   }
 }
 
-@layer utilities {
-  /* Custom scrollbar */
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-track {
-    @apply bg-base-200;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-base-300 rounded-lg;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    @apply bg-primary;
-  }
-}
+@layer utilities {}
