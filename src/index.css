@@ -2,6 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+/* General scrollbar styling */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-base-200;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-secondary rounded-lg border-4 border-solid border-base-200;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary;
+}
+
 /* Custom styles for documentation site */
 @layer base {
   /* Theme transition */
