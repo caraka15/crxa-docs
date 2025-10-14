@@ -28,6 +28,7 @@ export interface ChainService {
   snapshots?: string; // URL to snapshots API
   valoper?: string;
   dir?: string;
+  type?: string;
 }
 
 export interface Chain {

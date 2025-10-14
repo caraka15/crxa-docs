@@ -3,9 +3,10 @@
     "api": "https://paxi-api.crxanode.me",
     "rpc": "https://paxi-rpc.crxanode.me",
     "grpc": "paxi-grpc.crxanode.me:443",
-    "peer": "a93943e7b145eee76860e70aa042aabda699ab43@paxi-rpc.crxanode.me",
+    "peer": "a93943e7b145eee76860e70aa042aabda699ab43@paxi-rpc.crxanode.me:22656",
     "addrbook": "https://cdn.crxanode.me/paxi/addrbook.json",
     "genesis": "https://cdn.crxanode.me/paxi/genesis.json",
     "valoper": "paxivaloper1d4d4z8n6km92p4f7afy4u4rqgyumv45u468tln",
-    "dir": "~/go/bin/paxi/"
+    "dir": "~/go/bin/paxi/",
+    "type": "mainnet"
 }

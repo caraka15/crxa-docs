@@ -7,6 +7,7 @@ import { SnapshotTable } from '../components/SnapshotTable';
 import { SnapshotCommand } from '../components/SnapshotCommand';
 import { Logo } from '../components/Logo';
 import { PingBadge } from '../components/PingBadge';
+import { Badge } from '../components/ui/badge';
 
 export const ServicePage = () => {
   const { chain: chainSlug } = useParams<{ chain: string }>();
@@ -70,14 +71,17 @@ export const ServicePage = () => {
                 className="w-16 h-16"
               />
               <div>
-
-
-                <div className="flex items-center gap-4">
-                  <h1 className="text-3xl font-bold text-base-content">
-                    {service.chainName} Service
-                  </h1>
-
-                </div>
+                {service.type && (
+                  <Badge
+                    variant={service.type === 'mainnet' ? 'mainnet' : 'testnet'}
+                    className="mb-2"
+                  >
+                    {service.type}
+                  </Badge>
+                )}
+                <h1 className="text-3xl font-bold text-base-content">
+                  {service.chainName} Service
+                </h1>
                 <p className="text-base-content/70">
                   API endpoints, snapshots, and network information
                 </p>
@@ -87,7 +91,7 @@ export const ServicePage = () => {
             <div className="flex gap-2 mt-4 md:mt-0">
               {service.valoper && (
                 <a
-                  href={`https://explorer.crxanode.me/${chainSlug}/staking/${service.valoper}`}
+                  href={`https://${service.type === 'testnet' ? 'testnet-explorer' : 'explorer'}.crxanode.me/${chainSlug}/staking/${service.valoper}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn btn-primary btn-outline"

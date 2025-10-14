@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useChains } from '../hooks/useChains';
 import { Logo } from '@/components/Logo';
+import { Badge } from '@/components/ui/badge';
+import { StatusIndicator } from '@/components/StatusIndicator';
 
 export const Home = () => {
   const { chains, loading, error } = useChains();
@@ -64,13 +66,21 @@ export const Home = () => {
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {chains.map((chain) => (
                   <div key={chain.slug} className="card bg-base-200/80 backdrop-blur-sm hover:bg-base-300/80 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg">
-                    <div className="card-body p-6">
+                    <div className="card-body p-6 relative">
+                      {chain.service?.type && (
+                        <Badge variant={chain.service.type === 'mainnet' ? 'mainnet' : 'testnet'} className="absolute top-0 right-4 -translate-y-1/2">
+                          {chain.service.type}
+                        </Badge>
+                      )}
                       <div className="flex items-center gap-4 mb-4">
+                      <div className="relative">
                         <Logo
                           slug={chain.slug}
                           chainName={chain.service?.chainName || chain.slug.toUpperCase()}
                           className="w-12 h-12"
                         />
+                        {chain.service && <StatusIndicator url={chain.service.rpc || chain.service.api} className="absolute top-0 right-0 translate-x-1/4 -translate-y-1/4" />}
+                      </div>
                         <div>
                           <h3 className="text-xl font-bold text-base-content">
                             {chain.service?.chainName || chain.slug.toUpperCase()}
