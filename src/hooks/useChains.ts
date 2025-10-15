@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { ChainData, ChainService } from '../types/chain';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { Chain, ChainService } from '../types/chain';
 
 export const useChains = () => {
-  const [chains, setChains] = useState<ChainData[]>([]);
+  const [chains, setChains] = useState<Chain[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -12,16 +12,18 @@ export const useChains = () => {
         setLoading(true);
         
         // Auto-index service files
-                        const serviceModules = import.meta.glob('./../chains/service/*.json', {
-                          eager: true,
-                          as: 'json'
-                        });
+        const serviceModules = import.meta.glob('./../chains/service/*.json', {
+          eager: true,
+          as: 'json'
+        });
                         
-                        // Auto-index guide files  
-                        const guideModules = import.meta.glob('./../chains/guide/*.md', {
-                          eager: true,
-                          as: 'raw'
-                        });        const chainData: ChainData[] = [];
+        // Auto-index guide files  
+        const guideModules = import.meta.glob('./../chains/guide/*.md', {
+          eager: true,
+          as: 'raw'
+        });
+
+        const chainData: Chain[] = [];
         const processedSlugs = new Set<string>();
 
         // Process service files
@@ -66,9 +68,11 @@ export const useChains = () => {
     loadChains();
   }, []);
 
-  const getChain = (slug: string): ChainData | undefined => {
-    return chains.find(chain => chain.slug === slug);
-  };
+  const memoizedChains = useMemo(() => chains, [chains]);
 
-  return { chains, loading, error, getChain };
+  const getChain = useCallback((slug: string): Chain | undefined => {
+    return memoizedChains.find(chain => chain.slug === slug);
+  }, [memoizedChains]);
+
+  return { chains: memoizedChains, loading, error, getChain };
 };

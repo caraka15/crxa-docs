@@ -18,6 +18,7 @@ export interface SnapshotResponse {
 }
 
 export interface ChainService {
+  valcons: any;
   chainName: string;
   api: string;
   rpc: string;
@@ -29,10 +30,22 @@ export interface ChainService {
   valoper?: string;
   dir?: string;
   type?: string;
+  denom?: string; // e.g., "upaxi"
+  decimals?: number; // e.g., 6
 }
 
 export interface Chain {
   slug: string;
   service: ChainService | null;
   guide: string | null;
+}
+
+export interface ValidatorStats {
+  slug: string;
+  commission: number;
+  totalStake: string;
+  totalStakeRaw: number;
+  uptime: number;
+  loading: boolean;
+  error: string | null;
 }

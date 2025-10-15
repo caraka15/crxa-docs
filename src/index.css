@@ -4,6 +4,28 @@
 
 /* Custom styles for documentation site */
 @layer base {
+    :root {
+      --background: hsl(var(--b1));
+      --foreground: hsl(var(--bc));
+      --card: hsl(var(--b1));
+      --card-foreground: hsl(var(--bc));
+      --popover: hsl(var(--b2));
+      --popover-foreground: hsl(var(--bc));
+      --primary: hsl(var(--p));
+      --primary-foreground: hsl(var(--pc));
+      --secondary: hsl(var(--s));
+      --secondary-foreground: hsl(var(--sc));
+      --muted: hsl(var(--b2));
+      --muted-foreground: hsl(var(--bc) / 0.6);
+      --accent: hsl(var(--a));
+      --accent-foreground: hsl(var(--ac));
+      --destructive: hsl(var(--er));
+      --destructive-foreground: hsl(var(--ec));
+      --border: hsl(var(--b3));
+      --input: hsl(var(--b3));
+      --ring: hsl(var(--p));
+      --radius: 0.5rem;
+    }
 
   /* Theme transition */
   * {

@@ -1,0 +1,80 @@
+{
+  "validatorInfo": {
+    "name": "Crxanode",
+    "description": "Professional Proof-of-Stake validator for Cosmos ecosystem",
+    "website": "https://crxanode.me",
+    "logo": "/logo.png",
+    "explorer": {
+      "baseUrl": "explorer.crxanode.me",
+      "stakingPath": "/{chainName}/staking/{valoper}"
+    }
+  },
+  "aggregateStats": {
+    "totalAUM": "2.5M",
+    "totalDelegators": "1,247",
+    "uptime": "99.95%",
+    "averageAPR": "12.8%",
+    "commission": "5%"
+  },
+  "trustIndicators": [
+    {
+      "label": "24/7 Monitoring",
+      "description": "Continuous monitoring of validator performance"
+    },
+    {
+      "label": "Secure Infrastructure",
+      "description": "Enterprise-grade security and redundancy"
+    },
+    {
+      "label": "Community Focused",
+      "description": "Active in governance and community initiatives"
+    }
+  ],
+  "features": [
+    {
+      "title": "High Uptime",
+      "description": "Maintaining 99.95% uptime across all networks with redundant infrastructure and monitoring.",
+      "icon": "shield"
+    },
+    {
+      "title": "Competitive Rewards",
+      "description": "Maximize your staking rewards with our low 5% commission and consistent performance.",
+      "icon": "trending-up"
+    },
+    {
+      "title": "Secure Operations",
+      "description": "Your delegated assets are protected by enterprise-grade security measures and best practices.",
+      "icon": "lock"
+    },
+    {
+      "title": "24/7 Support",
+      "description": "Get help when you need it from our experienced team of blockchain professionals.",
+      "icon": "headphones"
+    }
+  ],
+  "steps": [
+    {
+      "title": "Connect Wallet",
+      "description": "Connect your Keplr or Cosmostation wallet to get started with staking.",
+      "icon": "wallet"
+    },
+    {
+      "title": "Choose Amount",
+      "description": "Select how much you want to delegate to Crxanode validator.",
+      "icon": "calculator"
+    },
+    {
+      "title": "Start Earning",
+      "description": "Confirm delegation and start earning staking rewards immediately.",
+      "icon": "trending-up"
+    }
+  ],
+  "team": [
+    {
+      "name": "Crxanode Team",
+      "role": "Validator Operators",
+      "description": "Experienced blockchain professionals dedicated to providing reliable validation services.",
+      "avatar": "👥"
+    }
+  ]
+}

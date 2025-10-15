@@ -7,6 +7,9 @@
     "addrbook": "https://cdn.crxanode.me/paxi/addrbook.json",
     "genesis": "https://cdn.crxanode.me/paxi/genesis.json",
     "valoper": "paxivaloper1d4d4z8n6km92p4f7afy4u4rqgyumv45u468tln",
+    "valcons": "paxivalcons10c2cy6xh5ul0k4cutq6fqa7jpfm883wyjkv2j3",
     "dir": "~/go/bin/paxi/",
-    "type": "mainnet"
+    "type": "mainnet",
+    "denom": "upaxi",
+    "decimals": 6
 }

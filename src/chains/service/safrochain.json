@@ -7,6 +7,9 @@
     "addrbook": "https://cdn.crxanode.me/safrochain/addrbook.json",
     "genesis": "https://cdn.crxanode.me/safrochain/genesis.json",
     "valoper": "addr_safrovaloper1nr0m7gw245rtr5e3vev0p9t5278qj05sv88v6t",
+    "valcons": "addr_safrovalcons1z3l2gjxqnpdmd3r02xdt6eldwcn82at0xqwc5z",
     "dir": "~/.safrochain",
-    "type": "testnet"
+    "type": "testnet",
+    "denom": "usafro",
+    "decimals": 6
 }
