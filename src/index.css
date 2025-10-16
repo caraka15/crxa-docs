@@ -98,4 +98,27 @@
   }
 }
 
-@layer utilities {}
+@layer utilities {
+  /* Gradient animation */
+  @keyframes gradient {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .animate-gradient {
+    animation: gradient 8s ease infinite;
+  }
+
+  .bg-300\% {
+    background-size: 300%;
+  }
+
+  /* Delay utilities for staggered animations */
+  .delay-1000 {
+    animation-delay: 1s;
+  }
+}
