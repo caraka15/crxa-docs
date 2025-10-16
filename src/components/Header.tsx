@@ -70,10 +70,10 @@ export const Header = () => {
             </HoverCardTrigger>
             <HoverCardContent className="w-48 p-2 bg-base-200 backdrop-blur-sm border border-base-300 shadow-xl " align="start">
               <div className="flex flex-col space-y-1">
-                <a href="https://mainnet.crxanode.me" target="_blank" rel="noopener noreferrer" className="dark:hover:bg-slate-900 hover:bg-base-300 block px-3 py-2 text-sm rounded-md hover:bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                <a href="https://explorer.crxanode.me" target="_blank" rel="noopener noreferrer" className="dark:hover:bg-slate-900 hover:bg-base-300 block px-3 py-2 text-sm rounded-md hover:bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                   Mainnet
                 </a>
-                <a href="https://testnet.crxanode.me" target="_blank" rel="noopener noreferrer" className="dark:hover:bg-slate-900 hover:bg-base-300 block px-3 py-2 text-sm rounded-md hover:bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                <a href="https://testnet-explorer.crxanode.me" target="_blank" rel="noopener noreferrer" className="dark:hover:bg-slate-900 hover:bg-base-300 block px-3 py-2 text-sm rounded-md hover:bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                   Testnet
                 </a>
               </div>
