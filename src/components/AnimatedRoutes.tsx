@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Home } from "../pages/Home";
 import { ServicePage } from "../pages/ServicePage";
 import { GuidePage } from "../pages/GuidePage";
+import { LicensePage } from "../pages/LicensePage";
 import NotFound from "../pages/NotFound";
 
 export const AnimatedRoutes = () => {
@@ -19,6 +20,7 @@ export const AnimatedRoutes = () => {
       >
         <Routes location={location}>
           <Route path="/" element={<Home />} />
+          <Route path="/license" element={<LicensePage />} />
           <Route path="/:chain/service" element={<ServicePage />} />
           <Route path="/:chain/guide" element={<GuidePage />} />
           <Route path="*" element={<NotFound />} />

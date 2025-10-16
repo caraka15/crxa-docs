@@ -45,13 +45,13 @@ export const Footer = () => {
           <div className="space-y-4">
             <h3 className="font-semibold text-base-content">Support</h3>
             <div className="space-y-2">
-              <a href="#" className="block text-base-content/70 hover:text-primary text-sm transition-colors">
+              <a href="#" target="_blank" className="block text-base-content/70 hover:text-primary text-sm transition-colors">
                 Contact Us
               </a>
-              <a href="#" className="block text-base-content/70 hover:text-primary text-sm transition-colors">
+              <a href="#" target="_blank" className="block text-base-content/70 hover:text-primary text-sm transition-colors">
                 Discord
               </a>
-              <a href="#" className="block text-base-content/70 hover:text-primary text-sm transition-colors">
+              <a href="https://t.me/caraka17" target="_blank" className="block text-base-content/70 hover:text-primary text-sm transition-colors">
                 Telegram
               </a>
             </div>
@@ -71,7 +71,7 @@ export const Footer = () => {
                 <Twitter className="w-4 h-4" />
               </a>
               <a
-                href="https://github.com/crxanode"
+                href="https://github.com/caraka15"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-ghost btn-sm btn-square"
@@ -81,7 +81,7 @@ export const Footer = () => {
               </a>
             </div>
             <div className="space-y-2">
-              <a href="#" className="flex items-center gap-2 text-base-content/70 hover:text-primary text-sm transition-colors">
+              <a href="/license" className="flex items-center gap-2 text-base-content/70 hover:text-primary text-sm transition-colors">
                 <FileText className="w-3 h-3" />
                 License
               </a>
