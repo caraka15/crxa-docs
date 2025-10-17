@@ -95,7 +95,7 @@ export const Footer = () => {
             © {currentYear} Crxanode. All rights reserved.
           </div>
           <div className="flex items-center gap-1 text-base-content/70 text-sm">
-            Made with <Heart className="w-3 h-3 text-red-500" /> by Crxanode Team
+            Crxanode Team
           </div>
         </div>
       </div>
