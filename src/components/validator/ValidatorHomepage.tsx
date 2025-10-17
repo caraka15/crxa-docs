@@ -142,12 +142,12 @@ const NetworkCard: React.FC<{ chain: Chain, stats: ValidatorStats | undefined }>
               {showPlaceholder ? '-' : stats.totalStake.split(' ')[0]}
             </p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-base-300/50 group-hover:bg-gradient-to-br group-hover:from-primary/20 group-hover:to-secondary/10 group-hover:shadow-lg group-hover:scale-105 transition-all duration-300 border border-transparent group-hover:border-primary/30">
+          <a href={`${explorerUrl}#uptime`} target="_blank" rel="noopener noreferrer" className="text-center p-3 rounded-lg bg-base-300/50 group-hover:bg-gradient-to-br group-hover:from-primary/20 group-hover:to-secondary/10 group-hover:shadow-lg group-hover:scale-105 transition-all duration-300 border border-transparent group-hover:border-primary/30">
             <p className="text-xs text-muted-foreground mb-1 group-hover:text-primary-foreground transition-colors">Uptime</p>
             <p className={`font-bold text-sm group-hover:text-lg transition-all duration-300 ${showPlaceholder ? '' : getUptimeColor(stats.uptime)}`}>
               {showPlaceholder ? '-' : `${stats.uptime.toFixed(2)}%`}
             </p>
-          </div>
+          </a>
         </div>
         <div className="flex gap-2">
           <Button asChild variant="outline" size="sm" className="relative overflow-hidden hover:bg-primary hover:text-primary-foreground hover:border-primary hover:scale-110 hover:shadow-xl hover:shadow-primary/50 transition-all duration-300 before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:-translate-x-full hover:before:translate-x-full before:transition-transform before:duration-700">

@@ -5,6 +5,8 @@ interface BlockHeightProps {
   rpcUrl: string;
   /** interval polling ms jika WS gagal (default 5000) */
   pollMs?: number;
+  chainSlug: string;
+  chainType: 'mainnet' | 'testnet';
 }
 
 function toWsUrl(httpUrl: string) {
@@ -20,7 +22,7 @@ function toWsUrl(httpUrl: string) {
   }
 }
 
-export const BlockHeight = ({ rpcUrl, pollMs = 5000 }: BlockHeightProps) => {
+export const BlockHeight = ({ rpcUrl, pollMs = 5000, chainSlug, chainType }: BlockHeightProps) => {
   const [blockHeight, setBlockHeight] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [hasAttempted, setHasAttempted] = useState(false);
@@ -141,11 +143,17 @@ export const BlockHeight = ({ rpcUrl, pollMs = 5000 }: BlockHeightProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rpcUrl, wsUrl, pollMs]);
 
+  const explorerUrl = chainType === 'testnet' ? 'testnet-explorer.crxanode.me' : 'explorer.crxanode.me';
+
   if (error && !blockHeight && hasAttempted) {
     return <span className="text-error text-xs">Offline</span>;
   }
   if (!blockHeight) {
     return <span className="loading loading-spinner loading-xs" />;
   }
-  return <span className="text-lg font-mono">#{blockHeight}</span>;
+  return (
+    <a href={`https://${explorerUrl}/${chainSlug}/block`} target="_blank" rel="noopener noreferrer" className="text-lg font-mono hover:text-primary">
+      #{blockHeight}
+    </a>
+  );
 };

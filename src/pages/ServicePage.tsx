@@ -91,12 +91,12 @@ export const ServicePage = () => {
             <div className="flex gap-2 mt-4 md:mt-0">
               {service.valoper && (
                 <a
-                  href={`https://${service.type === 'testnet' ? 'testnet-explorer' : 'explorer'}.crxanode.me/${chainSlug}/staking/${service.valoper}`}
+                  href={`https://cdn.crxanode.me/${chainSlug}/`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn btn-primary btn-outline"
                 >
-                  My Validator
+                  CDN
                 </a>
               )}
               {chain.guide && (
@@ -114,7 +114,7 @@ export const ServicePage = () => {
           <div className="mb-12">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-base-content">Network Endpoints</h2>
-              <BlockHeight rpcUrl={service.rpc} />
+              <BlockHeight rpcUrl={service.rpc} chainSlug={chainSlug || ''} chainType={service.type as 'mainnet' | 'testnet'} />
             </div>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               <div className="card bg-base-200/80 backdrop-blur-sm hover:bg-base-300/80 transition-colors group">
