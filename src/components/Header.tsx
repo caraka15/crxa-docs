@@ -6,12 +6,27 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { Button } from "@/components/ui/button";
-import { useState } from 'react';
+import { Menu } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useThrottle } from '../hooks/useThrottle';
 
 export const Header = () => {
   const { theme, toggleTheme } = useTheme();
   const [isExplorerSticky, setExplorerSticky] = useState(false);
   const [isExplorerOpen, setExplorerOpen] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const throttledScrollY = useThrottle(scrollY, 100);
+  const isScrolled = throttledScrollY > 50;
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleExplorerOpenChange = (open: boolean) => {
     // Only handle hover changes if the menu is not sticky
@@ -34,18 +49,23 @@ export const Header = () => {
 
 
   return (
-    <header className="navbar bg-base-100 border-b border-base-300 sticky top-0 z-50">
+    <header className={`navbar sticky top-0 z-50 transition-all duration-500 ${isScrolled
+        ? 'bg-base-100 border-b border-base-300 py-3 shadow-lg'
+        : 'bg-base-100/95 border-b border-transparent py-6'
+      }`}>
       <div className="navbar-start">
-        <Link to="/" className="flex items-center gap-3 text-xl font-bold text-primary hover:text-secondary transition-colors ml-5">
+        <Link to="/" className="flex items-center gap-3 font-bold text-primary hover:text-secondary transition-colors ml-5">
           <img
             src="/logo.png"
             alt="Crxanode logo"
-            className="w-8 h-8 rounded-full"
+            className={`rounded-full transition-all duration-500 ${isScrolled ? 'w-8 h-8' : 'w-10 h-10'
+              }`}
             onError={(e) => {
               e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiNGRjY1MDAiLz4KPHRleHQgeD0iMTYiIHk9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjE0Ij5DPC90ZXh0Pgo8L3N2Zz4K';
             }}
           />
-          <span>
+          <span className={`transition-all duration-500 ${isScrolled ? 'text-xl' : 'text-2xl'
+            }`}>
             Crxanode Service
           </span>
         </Link>
@@ -63,7 +83,8 @@ export const Header = () => {
               <Button
                 variant="ghost"
                 onClick={handleExplorerClick}
-                className="transition-all duration-200 hover:bg-base-300 hover:text-primary"
+                className={`transition-all duration-500 hover:bg-base-300 hover:text-primary ${isScrolled ? 'text-sm' : 'text-base'
+                  }`}
               >
                 Explorer
               </Button>
@@ -79,12 +100,59 @@ export const Header = () => {
               </div>
             </HoverCardContent>
           </HoverCard>
-          <Button variant="ghost" asChild className="transition-all duration-200 hover:bg-base-200 hover:text-primary">
+          <Button variant="ghost" asChild className={`transition-all duration-500 hover:bg-base-300 hover:text-primary ${isScrolled ? 'text-sm' : 'text-base'
+            }`}>
             <a href="https://cdn.crxanode.me" target="_blank" rel="noopener noreferrer">
               CDN
             </a>
           </Button>
         </nav>
+
+        {/* Mobile Menu */}
+        <HoverCard open={isMobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+          <HoverCardTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
+              onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+          </HoverCardTrigger>
+          <HoverCardContent className="w-48 p-2 bg-base-200 backdrop-blur-sm border border-base-300 shadow-xl" align="end">
+            <div className="flex flex-col space-y-1">
+              <a
+                href="https://explorer.crxanode.me"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="dark:hover:bg-slate-900 hover:bg-base-300 block px-3 py-2 text-sm rounded-md hover:bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Explorer (Mainnet)
+              </a>
+              <a
+                href="https://testnet-explorer.crxanode.me"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="dark:hover:bg-slate-900 hover:bg-base-300 block px-3 py-2 text-sm rounded-md hover:bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Explorer (Testnet)
+              </a>
+              <a
+                href="https://cdn.crxanode.me"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="dark:hover:bg-slate-900 hover:bg-base-300 block px-3 py-2 text-sm rounded-md hover:bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                CDN
+              </a>
+            </div>
+          </HoverCardContent>
+        </HoverCard>
+
         <button
           onClick={toggleTheme}
           className="btn btn-ghost btn-circle"

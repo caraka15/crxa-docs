@@ -70,7 +70,7 @@ const getExplorerStakingUrl = (service: ChainService): string => {
 };
 
 const NetworkCardSkeleton: React.FC = () => (
-  <Card className="bg-base-200/80 backdrop-blur-sm border-base-300 animate-pulse">
+  <Card className="bg-base-200/70 border-base-300 animate-pulse">
     <CardHeader>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -109,7 +109,7 @@ const NetworkCard: React.FC<{ chain: Chain, stats: ValidatorStats | undefined }>
   const showPlaceholder = !stats || stats.loading || stats.error;
 
   return (
-    <Card className="group relative overflow-hidden hover:shadow-2xl hover:shadow-primary/40 hover:border-primary hover:-translate-y-2 hover:scale-[1.03] transition-all duration-500 ease-out bg-base-200/80 backdrop-blur-sm border-base-300 before:absolute before:inset-0 before:bg-gradient-to-br before:from-primary/0 before:via-primary/0 before:to-primary/0 hover:before:from-primary/10 hover:before:via-primary/5 hover:before:to-transparent before:transition-all before:duration-500">
+    <Card className="group relative overflow-hidden hover:shadow-2xl hover:shadow-primary/40 hover:border-primary hover:-translate-y-2 hover:scale-[1.03] transition-all duration-500 ease-out bg-base-200/70 border-base-300 before:absolute before:inset-0 before:bg-gradient-to-br before:from-primary/0 before:via-primary/0 before:to-primary/0 hover:before:from-primary/10 hover:before:via-primary/5 hover:before:to-transparent before:transition-all before:duration-500">
       <CardHeader className="relative z-10">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -254,7 +254,7 @@ export const ValidatorHomepage = () => {
                 {heroStats.map((stat, index) => (
                   <div
                     key={index}
-                    className="group relative card bg-gradient-to-br from-base-200/90 to-base-300/50 backdrop-blur-sm border border-base-300 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 hover:-translate-y-2 overflow-hidden"
+                    className="group relative card bg-gradient-to-br from-base-200/80 to-base-300/40 border border-base-300 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 hover:-translate-y-2 overflow-hidden"
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
                     {/* Shine effect */}
@@ -300,7 +300,7 @@ export const ValidatorHomepage = () => {
         </section>
 
         {/* Networks Section - Enhanced */}
-        <section id="networks" className="py-24 bg-gradient-to-b from-base-100/50 to-base-200/50 backdrop-blur-sm relative overflow-hidden">
+        <section id="networks" className="py-24 relative overflow-hidden">
           {/* Decorative elements */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
 
@@ -344,7 +344,7 @@ export const ValidatorHomepage = () => {
         </section>
 
         {/* Why Stake Section - Enhanced */}
-        <section id="why-stake" className="py-24 bg-gradient-to-b from-base-200/50 to-base-100/50 backdrop-blur-sm relative">
+        <section id="why-stake" className="py-24 relative">
           <div className="container mx-auto px-4 relative z-10">
             <div className="text-center mb-16">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 mb-4">
@@ -363,7 +363,7 @@ export const ValidatorHomepage = () => {
               {validatorData.features.map((feature, idx) => (
                 <div
                   key={idx}
-                  className="group card bg-gradient-to-br from-base-100/90 to-base-200/50 backdrop-blur-sm border border-base-300 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 hover:-translate-y-2 relative overflow-hidden"
+                  className="group card bg-gradient-to-br from-base-100/80 to-base-200/40 border border-base-300 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 hover:-translate-y-2 relative overflow-hidden"
                 >
                   {/* Animated background */}
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/0 to-primary/0 group-hover:from-primary/10 group-hover:to-transparent transition-all duration-500"></div>
@@ -385,7 +385,7 @@ export const ValidatorHomepage = () => {
         </section>
 
         {/* How to Start Section - Enhanced */}
-        <section className="py-24 bg-gradient-to-b from-base-100/50 to-base-200/50 backdrop-blur-sm relative">
+        <section className="py-24 relative">
           <div className="container mx-auto px-4 relative z-10">
             <div className="text-center mb-16">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 mb-4">
@@ -408,7 +408,7 @@ export const ValidatorHomepage = () => {
                   className="group relative"
                   style={{ animationDelay: `${idx * 150}ms` }}
                 >
-                  <div className="card bg-gradient-to-br from-base-200/90 to-base-300/50 backdrop-blur-sm border border-base-300 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 hover:-translate-y-2 relative overflow-hidden">
+                  <div className="card bg-gradient-to-br from-base-200/80 to-base-300/40 border border-base-300 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/20 transition-all duration-500 hover:-translate-y-2 relative overflow-hidden">
                     {/* Shine effect */}
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
 
@@ -440,7 +440,7 @@ export const ValidatorHomepage = () => {
         </section>
 
         {/* Trust Section - Enhanced */}
-        <section className="py-24 bg-gradient-to-b from-base-200/50 to-base-100/50 backdrop-blur-sm relative overflow-hidden">
+        <section className="py-24 relative overflow-hidden">
           {/* Decorative gradient orb */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-3xl"></div>
 
@@ -462,7 +462,7 @@ export const ValidatorHomepage = () => {
               {validatorData.trustIndicators.map((indicator, idx) => (
                 <div
                   key={idx}
-                  className="group card bg-gradient-to-br from-base-100/90 to-base-200/50 backdrop-blur-sm border border-base-300 hover:border-success/50 hover:shadow-2xl hover:shadow-success/20 transition-all duration-500 hover:-translate-y-2 relative overflow-hidden"
+                  className="group card bg-gradient-to-br from-base-100/80 to-base-200/40 border border-base-300 hover:border-success/50 hover:shadow-2xl hover:shadow-success/20 transition-all duration-500 hover:-translate-y-2 relative overflow-hidden"
                 >
                   {/* Animated gradient background */}
                   <div className="absolute inset-0 bg-gradient-to-br from-success/0 to-success/0 group-hover:from-success/10 group-hover:to-transparent transition-all duration-500"></div>
@@ -484,16 +484,13 @@ export const ValidatorHomepage = () => {
         </section>
 
         {/* CTA Section - Enhanced */}
-        <section className="py-24 bg-gradient-to-br from-primary via-primary to-secondary relative overflow-hidden">
-          {/* Animated background pattern */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-white rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-white rounded-full blur-3xl animate-pulse delay-1000"></div>
-          </div>
+        <section className="py-24 relative overflow-hidden">
+          {/* Gradient overlay for readability */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/85 to-secondary/90"></div>
 
           <div className="container mx-auto px-4 text-center relative z-10">
             <div className="max-w-4xl mx-auto">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 mb-6 backdrop-blur-sm">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 border border-white/30 mb-6">
                 <Zap className="w-4 h-4 text-white animate-pulse" />
                 <span className="text-sm font-medium text-white">Get Started Today</span>
               </div>
@@ -524,7 +521,7 @@ export const ValidatorHomepage = () => {
 
                 <a
                   href="mailto:admin@crxanode.me"
-                  className="group btn btn-outline border-2 border-white/30 text-white hover:bg-white/10 hover:border-white btn-lg text-lg px-8 backdrop-blur-sm hover:scale-110 transition-all duration-300 shadow-xl"
+                  className="group btn btn-outline border-2 border-white/50 text-white hover:bg-white/20 hover:border-white btn-lg text-lg px-8 hover:scale-110 transition-all duration-300 shadow-xl"
                 >
                   <span className="flex items-center gap-2">
                     Contact Us
