@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Chain, ChainService } from '../types/chain';
 import { SERVICE_PATH, GUIDE_PATH } from '../constants/cdn';
 
@@ -84,82 +85,85 @@ const fetchChainGuides = async (
   return { guides, errors };
 };
 
+type GuideFetchResult = { guides: Map<string, string>; errors: string[] };
+
+interface ChainsQueryPayload {
+  chains: Chain[];
+  errors: string[];
+}
+
 interface UseChainsOptions {
   includeGuides?: boolean;
 }
 
+const fetchChains = async (includeGuides: boolean): Promise<ChainsQueryPayload> => {
+  const [serviceSlugs, guideSlugs] = await Promise.all([
+    fetchSlugsFromCdn(SERVICE_PATH, '.json'),
+    fetchSlugsFromCdn(GUIDE_PATH, '.md')
+  ]);
+
+  const [{ services, errors: serviceErrors }, guidesResult] = await Promise.all([
+    fetchChainServices(serviceSlugs),
+    includeGuides && guideSlugs.length
+      ? fetchChainGuides(guideSlugs)
+      : Promise.resolve<GuideFetchResult>({ guides: new Map<string, string>(), errors: [] })
+  ]);
+
+  const guideSlugSet = new Set(guideSlugs);
+  const guides = includeGuides ? guidesResult.guides : new Map<string, string>();
+
+  const allSlugs = new Set<string>([
+    ...services.keys(),
+    ...guideSlugSet
+  ]);
+
+  const chainData: Chain[] = Array.from(allSlugs).map((slug) => ({
+    slug,
+    service: services.get(slug) ?? null,
+    guide: includeGuides ? guides.get(slug) ?? null : null,
+    hasGuide: guideSlugSet.has(slug)
+  }));
+
+  return {
+    chains: chainData.sort((a, b) => a.slug.localeCompare(b.slug)),
+    errors: [
+      ...serviceErrors,
+      ...(guidesResult.errors ?? [])
+    ]
+  };
+};
+
 export const useChains = (options: UseChainsOptions = {}) => {
   const { includeGuides = false } = options;
-  const [chains, setChains] = useState<Chain[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    let cancelled = false;
+  const queryKey = includeGuides ? ['chains', 'include-guides'] : ['chains'];
 
-    const loadChains = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+  const {
+    data,
+    error: queryError,
+    isLoading,
+    isFetching
+  } = useQuery<ChainsQueryPayload>({
+    queryKey,
+    queryFn: () => fetchChains(includeGuides),
+    staleTime: Infinity,
+    cacheTime: Infinity
+  });
 
-        const [serviceSlugs, guideSlugs] = await Promise.all([
-          fetchSlugsFromCdn(SERVICE_PATH, '.json'),
-          fetchSlugsFromCdn(GUIDE_PATH, '.md')
-        ]);
-
-        const [{ services, errors: serviceErrors }, guidesResult] = await Promise.all([
-          fetchChainServices(serviceSlugs),
-          includeGuides && guideSlugs.length
-            ? fetchChainGuides(guideSlugs)
-            : Promise.resolve({ guides: new Map<string, string>(), errors: [] as string[] })
-        ]);
-
-        const guideSlugSet = new Set(guideSlugs);
-        const guides = guidesResult.guides;
-
-        const allSlugs = new Set<string>([
-          ...services.keys(),
-          ...guideSlugSet
-        ]);
-
-        const chainData: Chain[] = Array.from(allSlugs).map((slug) => ({
-          slug,
-          service: services.get(slug) ?? null,
-          guide: includeGuides ? guides.get(slug) ?? null : null,
-          hasGuide: guideSlugSet.has(slug)
-        }));
-
-        if (!cancelled) {
-          const aggregatedErrors = [
-            ...serviceErrors,
-            ...(guidesResult.errors ?? [])
-          ];
-          setError(aggregatedErrors.length ? aggregatedErrors.join('; ') : null);
-          setChains(chainData.sort((a, b) => a.slug.localeCompare(b.slug)));
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : 'Failed to load chains');
-        }
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      }
-    };
-
-    loadChains();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const memoizedChains = useMemo(() => chains, [chains]);
+  const chains = data?.chains ?? [];
+  const aggregatedErrors = data?.errors?.length ? data.errors.join('; ') : null;
+  const error =
+    queryError instanceof Error
+      ? queryError.message
+      : queryError
+        ? String(queryError)
+        : aggregatedErrors;
 
   const getChain = useCallback((slug: string): Chain | undefined => {
-    return memoizedChains.find(chain => chain.slug === slug);
-  }, [memoizedChains]);
+    return chains.find(chain => chain.slug === slug);
+  }, [chains]);
 
-  return { chains: memoizedChains, loading, error, getChain };
+  const loading = !chains.length && (isLoading || isFetching);
+
+  return { chains, loading, error, getChain };
 };

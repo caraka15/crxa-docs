@@ -1,38 +1,116 @@
+import { useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { CopyButton } from '../components/CopyButton';
 import { BlockHeight } from '../components/BlockHeight';
 import { useParams, Link } from 'react-router-dom';
 import { useChains } from '../hooks/useChains';
+import { chainGuideQueryKey, fetchGuideContent } from '../hooks/useChainGuide';
 import { EndpointCard } from '../components/EndpointCard';
 import { SnapshotTable } from '../components/SnapshotTable';
-import { SnapshotCommand } from '../components/SnapshotCommand';
 import { Logo } from '../components/Logo';
 import { PingBadge } from '../components/PingBadge';
 import { Badge } from '../components/ui/badge';
-import { NetworkBackground } from '../components/NetworkBackground';
+
+const ServiceSkeleton = () => (
+  <div className="relative min-h-screen flex flex-col bg-transparent">
+    <div className="relative z-10 flex-1">
+      <div className="w-full max-w-none px-4 sm:px-6 lg:px-8 py-8">
+        <div className="animate-pulse space-y-10">
+          <div className="h-4 w-48 bg-base-300/70 rounded" />
+
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-full bg-base-300/70" />
+              <div className="space-y-3">
+                <div className="h-5 w-20 bg-base-300/70 rounded" />
+                <div className="h-8 w-56 bg-base-300/70 rounded" />
+                <div className="h-4 w-40 bg-base-300/70 rounded" />
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <div className="h-10 w-24 bg-base-300/70 rounded" />
+              <div className="h-10 w-28 bg-base-300/70 rounded" />
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="h-6 w-48 bg-base-300/70 rounded" />
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, idx) => (
+                <div
+                  key={idx}
+                  className="card bg-base-200/70 border border-base-300/60"
+                >
+                  <div className="card-body p-4 space-y-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-base-300/70" />
+                        <div className="space-y-2">
+                          <div className="h-4 w-24 bg-base-300/70 rounded" />
+                          <div className="h-3 w-32 bg-base-300/70 rounded" />
+                        </div>
+                      </div>
+                      <div className="h-6 w-16 bg-base-300/70 rounded" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="h-6 w-44 bg-base-300/70 rounded" />
+            <div className="overflow-hidden rounded-xl border border-base-300/60 bg-base-200/70">
+              <div className="p-4 border-b border-base-300/50">
+                <div className="h-4 w-48 bg-base-300/70 rounded" />
+              </div>
+              <div className="divide-y divide-base-300/40">
+                {Array.from({ length: 3 }).map((_, idx) => (
+                  <div key={idx} className="p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div className="space-y-2">
+                      <div className="h-4 w-56 bg-base-300/70 rounded" />
+                      <div className="h-3 w-80 bg-base-300/70 rounded" />
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="hidden md:block h-4 w-24 bg-base-300/70 rounded" />
+                      <div className="h-9 w-32 bg-base-300/70 rounded" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 export const ServicePage = () => {
   const { chain: chainSlug } = useParams<{ chain: string }>();
   const { getChain, loading } = useChains();
+  const queryClient = useQueryClient();
 
   const chain = chainSlug ? getChain(chainSlug) : undefined;
 
+  useEffect(() => {
+    if (!chainSlug || !chain?.hasGuide) {
+      return;
+    }
+
+    queryClient.prefetchQuery({
+      queryKey: chainGuideQueryKey(chainSlug),
+      queryFn: () => fetchGuideContent(chainSlug)
+    });
+  }, [chainSlug, chain?.hasGuide, queryClient]);
+
   if (loading) {
-    return (
-      <div className="relative min-h-screen flex flex-col bg-transparent">
-        <NetworkBackground />
-        <div className="relative z-10 flex-1 container mx-auto px-4 py-8">
-          <div className="flex justify-center items-center py-20">
-            <span className="loading loading-spinner loading-lg text-primary"></span>
-          </div>
-        </div>
-      </div>
-    );
+    return <ServiceSkeleton />;
   }
 
   if (!chain || !chain.service) {
     return (
       <div className="relative min-h-screen flex flex-col bg-transparent">
-        <NetworkBackground />
         <div className="relative z-10 flex-1 container mx-auto px-4 py-8">
           <div className="alert alert-error bg-base-200/70">
             <svg className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
@@ -41,9 +119,7 @@ export const ServicePage = () => {
             <span>Chain "{chainSlug}" not found or no service configuration available.</span>
           </div>
           <div className="mt-4">
-            <Link to="/" className="btn btn-primary">
-              ← Back to Home
-            </Link>
+            <Link to="/" className="btn btn-primary">Back to Home</Link>
           </div>
         </div>
       </div>
@@ -54,7 +130,6 @@ export const ServicePage = () => {
 
   return (
     <div className="relative min-h-screen flex flex-col bg-transparent">
-      <NetworkBackground />
       <div className="relative z-10 flex-1">
         <div className="w-full max-w-none px-4 sm:px-6 lg:px-8 py-8">{/* Rest stays the same */}
           {/* Breadcrumb */}
@@ -108,7 +183,7 @@ export const ServicePage = () => {
                   to={`/${chainSlug}/guide`}
                   className="btn btn-secondary btn-outline"
                 >
-                  📖 Installation Guide
+                   Installation Guide
                 </Link>
               )}
             </div>
@@ -212,3 +287,5 @@ export const ServicePage = () => {
     </div>
   );
 };
+
+

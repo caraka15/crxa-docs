@@ -1,52 +1,35 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { GUIDE_PATH } from '../constants/cdn';
 
+export const chainGuideQueryKey = (slug: string) => ['chain-guide', slug] as const;
+
+export const fetchGuideContent = async (slug: string): Promise<string> => {
+  const response = await fetch(`${GUIDE_PATH}/${slug}.md`, { cache: 'no-store' });
+  if (!response.ok) {
+    throw new Error(`Failed to load guide for ${slug}`);
+  }
+  return response.text();
+};
+
 export const useChainGuide = (slug?: string | null) => {
-  const [guide, setGuide] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(Boolean(slug));
-  const [error, setError] = useState<string | null>(null);
+  const {
+    data,
+    error,
+    isLoading,
+    isFetching
+  } = useQuery<string>({
+    queryKey: chainGuideQueryKey(slug!),
+    queryFn: () => fetchGuideContent(slug!),
+    enabled: Boolean(slug),
+    staleTime: Infinity,
+    cacheTime: Infinity,
+    retry: 1
+  });
 
-  useEffect(() => {
-    if (!slug) {
-      setGuide(null);
-      setLoading(false);
-      return;
-    }
+  const guide = slug ? data ?? null : null;
+  const loading = Boolean(slug) ? (isLoading && !data) : false;
+  const fetchError =
+    error instanceof Error ? error.message : error ? String(error) : null;
 
-    let cancelled = false;
-
-    const loadGuide = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        setGuide(null);
-
-        const response = await fetch(`${GUIDE_PATH}/${slug}.md`, { cache: 'no-store' });
-        if (!response.ok) {
-          throw new Error(`Failed to load guide for ${slug}`);
-        }
-        const text = await response.text();
-
-        if (!cancelled) {
-          setGuide(text);
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : 'Failed to load guide');
-        }
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      }
-    };
-
-    loadGuide();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [slug]);
-
-  return { guide, loading, error };
+  return { guide, loading, error: fetchError, isFetching: Boolean(slug) && isFetching };
 };

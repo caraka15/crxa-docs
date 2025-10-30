@@ -49,10 +49,13 @@ export const Header = () => {
 
 
   return (
-    <header className={`navbar sticky top-0 z-50 transition-all duration-500 ${isScrolled
-        ? 'bg-base-100 border-b border-base-300 py-3 shadow-lg'
-        : 'bg-base-100/95 border-b border-transparent py-6'
-      }`}>
+    <header
+      className={`navbar sticky top-0 z-50 transition-all duration-500 ${
+        isScrolled
+          ? 'bg-base-100/90 backdrop-blur border-b border-base-300 py-3 shadow-lg'
+          : 'bg-transparent border-b border-transparent py-6'
+      }`}
+    >
       <div className="navbar-start">
         <Link to="/" className="flex items-center gap-3 font-bold text-primary hover:text-secondary transition-colors ml-5">
           <img

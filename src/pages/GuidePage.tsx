@@ -9,7 +9,70 @@ import { CodeBlock } from '../components/CodeBlock';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useState } from 'react';
 import { SearchModal } from '@/components/SearchModal';
-import { NetworkBackground } from '../components/NetworkBackground';
+
+const GuideSkeleton = () => (
+  <div className="relative bg-transparent flex flex-col">
+    <div className="relative z-10 flex flex-1">
+      <div className="hidden lg:block w-72 border-r border-base-300/50 bg-base-200/30">
+        <div className="p-6 space-y-4 animate-pulse">
+          <div className="h-5 w-40 bg-base-300/70 rounded" />
+          {Array.from({ length: 8 }).map((_, idx) => (
+            <div key={idx} className="h-4 w-56 bg-base-300/70 rounded" />
+          ))}
+        </div>
+      </div>
+      <main className="flex-1 overflow-auto">
+        <div className="w-full max-w-none px-4 sm:px-6 lg:px-8 py-8">
+          <div className="animate-pulse space-y-10">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-4">
+                <div className="h-9 w-9 bg-base-300/70 rounded-lg lg:hidden" />
+                <div className="h-4 w-48 bg-base-300/70 rounded" />
+              </div>
+              <div className="h-9 w-28 bg-base-300/70 rounded lg:hidden" />
+            </div>
+
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-full bg-base-300/70" />
+                <div className="space-y-3">
+                  <div className="h-8 w-64 bg-base-300/70 rounded" />
+                  <div className="h-4 w-56 bg-base-300/70 rounded" />
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <div className="h-10 w-32 bg-base-300/70 rounded" />
+                <div className="h-10 w-32 bg-base-300/70 rounded" />
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <div className="space-y-3">
+                <div className="h-5 w-48 bg-base-300/70 rounded" />
+                <div className="h-4 w-72 bg-base-300/70 rounded" />
+              </div>
+
+              {Array.from({ length: 4 }).map((_, idx) => (
+                <div key={idx} className="space-y-2">
+                  <div className="h-6 w-40 bg-base-300/70 rounded" />
+                  <div className="h-4 w-full bg-base-300/70 rounded" />
+                  <div className="h-4 w-11/12 bg-base-300/70 rounded" />
+                  <div className="h-4 w-4/5 bg-base-300/70 rounded" />
+                </div>
+              ))}
+
+              <div className="bg-base-200/70 border border-base-300/60 rounded-xl p-6 space-y-3">
+                <div className="h-4 w-32 bg-base-300/70 rounded" />
+                <div className="h-4 w-full bg-base-300/70 rounded" />
+                <div className="h-4 w-5/6 bg-base-300/70 rounded" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+);
 
 export const GuidePage = () => {
   const { chain: chainSlug } = useParams<{ chain: string }>();
@@ -22,23 +85,13 @@ export const GuidePage = () => {
   const guideSlug = chain?.hasGuide ? chain.slug : null;
   const { guide, loading: guideLoading, error: guideError } = useChainGuide(guideSlug);
 
-  if (loading || guideLoading) {
-    return (
-      <div className="relative min-h-screen bg-transparent">
-        <NetworkBackground />
-        <div className="relative z-10 container mx-auto px-4 py-8">
-          <div className="flex justify-center items-center py-20">
-            <span className="loading loading-spinner loading-lg text-primary"></span>
-          </div>
-        </div>
-      </div>
-    );
+  if ((loading && !chain) || (guideLoading && !guide)) {
+    return <GuideSkeleton />;
   }
 
   if (!chain) {
     return (
       <div className="relative min-h-screen bg-transparent">
-        <NetworkBackground />
         <div className="relative z-10 container mx-auto px-4 py-8">
           <div className="alert alert-error bg-base-200/70">
             <svg className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
@@ -47,9 +100,7 @@ export const GuidePage = () => {
             <span>Chain "${chainSlug}" tidak ditemukan.</span>
           </div>
           <div className="mt-4">
-            <Link to="/" className="btn btn-primary">
-              ?+? Back to Home
-            </Link>
+            <Link to="/" className="btn btn-primary">Back to Home</Link>
           </div>
         </div>
       </div>
@@ -59,7 +110,6 @@ export const GuidePage = () => {
   if (!chain.hasGuide || guideError) {
     return (
       <div className="relative min-h-screen bg-transparent">
-        <NetworkBackground />
         <div className="relative z-10 container mx-auto px-4 py-8">
           <div className="alert alert-error bg-base-200/70">
             <svg className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
@@ -68,9 +118,7 @@ export const GuidePage = () => {
             <span>{guideError ? `Gagal memuat panduan untuk "${chainSlug}".` : `Panduan untuk "${chainSlug}" tidak tersedia.`}</span>
           </div>
           <div className="mt-4">
-            <Link to="/" className="btn btn-primary">
-              ?+? Back to Home
-            </Link>
+            <Link to="/" className="btn btn-primary">Back to Home</Link>
           </div>
         </div>
       </div>
@@ -85,7 +133,6 @@ export const GuidePage = () => {
 
   return (
     <div className="relative bg-transparent flex flex-col">
-      <NetworkBackground />
       <div className="relative z-10 flex flex-1">
         {/* Left Sidebar */}
         <GuideSidebar
@@ -145,7 +192,7 @@ export const GuidePage = () => {
                     to={`/${chainSlug}/service`}
                     className="btn btn-primary btn-outline"
                   >
-                    🔗 Service Endpoints
+                     Service Endpoints
                   </Link>
                 )}
               </div>
@@ -256,5 +303,6 @@ export const GuidePage = () => {
     </div>
   );
 };
+
 
 
