@@ -103,7 +103,7 @@ export const ServicePage = () => {
                   CDN
                 </a>
               )}
-              {chain.guide && (
+              {chain.hasGuide && (
                 <Link
                   to={`/${chainSlug}/guide`}
                   className="btn btn-secondary btn-outline"

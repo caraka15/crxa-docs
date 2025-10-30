@@ -155,8 +155,8 @@ const NetworkCard: React.FC<{ chain: Chain, stats: ValidatorStats | undefined }>
               Service
             </Link>
           </Button>
-          <Button asChild variant="outline" size="sm" disabled={!chain.guide} className="relative overflow-hidden hover:bg-primary hover:text-primary-foreground hover:border-primary hover:scale-110 hover:shadow-xl hover:shadow-primary/50 transition-all duration-300 before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:-translate-x-full hover:before:translate-x-full before:transition-transform before:duration-700">
-            <Link to={`/${chain.slug}/guide`} onClick={(e) => !chain.guide && e.preventDefault()}>
+          <Button asChild variant="outline" size="sm" disabled={!chain.hasGuide} className="relative overflow-hidden hover:bg-primary hover:text-primary-foreground hover:border-primary hover:scale-110 hover:shadow-xl hover:shadow-primary/50 transition-all duration-300 before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:-translate-x-full hover:before:translate-x-full before:transition-transform before:duration-700">
+            <Link to={`/${chain.slug}/guide`} onClick={(e) => !chain.hasGuide && e.preventDefault()}>
               Guide
             </Link>
           </Button>

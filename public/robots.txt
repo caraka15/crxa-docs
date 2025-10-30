@@ -8,4 +8,4 @@ User-agent: facebookexternalhit
 Allow: /
 User-agent: *
 Allow: /
-Sitemap: https://docs.crxanode.me/sitemap.xml
+Sitemap: http://localhost:8080/sitemap.xml

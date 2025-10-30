@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useChains } from '../hooks/useChains';
+import { useChainGuide } from '../hooks/useChainGuide';
 import { Logo } from '../components/Logo';
 import { GuideSidebar } from '../components/GuideSidebar';
 import { CodeBlock } from '../components/CodeBlock';
@@ -18,8 +19,10 @@ export const GuidePage = () => {
   const [searchOpen, setSearchOpen] = useState(false);
 
   const chain = chainSlug ? getChain(chainSlug) : undefined;
+  const guideSlug = chain?.hasGuide ? chain.slug : null;
+  const { guide, loading: guideLoading, error: guideError } = useChainGuide(guideSlug);
 
-  if (loading) {
+  if (loading || guideLoading) {
     return (
       <div className="relative min-h-screen bg-transparent">
         <NetworkBackground />
@@ -32,7 +35,7 @@ export const GuidePage = () => {
     );
   }
 
-  if (!chain || !chain.guide) {
+  if (!chain) {
     return (
       <div className="relative min-h-screen bg-transparent">
         <NetworkBackground />
@@ -41,16 +44,41 @@ export const GuidePage = () => {
             <svg className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span>Chain "{chainSlug}" not found or no guide available.</span>
+            <span>Chain "${chainSlug}" tidak ditemukan.</span>
           </div>
           <div className="mt-4">
             <Link to="/" className="btn btn-primary">
-              ← Back to Home
+              ?+? Back to Home
             </Link>
           </div>
         </div>
       </div>
     );
+  }
+
+  if (!chain.hasGuide || guideError) {
+    return (
+      <div className="relative min-h-screen bg-transparent">
+        <NetworkBackground />
+        <div className="relative z-10 container mx-auto px-4 py-8">
+          <div className="alert alert-error bg-base-200/70">
+            <svg className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{guideError ? `Gagal memuat panduan untuk "${chainSlug}".` : `Panduan untuk "${chainSlug}" tidak tersedia.`}</span>
+          </div>
+          <div className="mt-4">
+            <Link to="/" className="btn btn-primary">
+              ?+? Back to Home
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!guide) {
+    return null;
   }
 
   const chainName = chain.service?.chainName || chainSlug?.toUpperCase() || 'Unknown';
@@ -61,7 +89,7 @@ export const GuidePage = () => {
       <div className="relative z-10 flex flex-1">
         {/* Left Sidebar */}
         <GuideSidebar
-          content={chain.guide}
+          content={guide}
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
           onSearchOpen={() => setSearchOpen(true)}
@@ -212,7 +240,7 @@ export const GuidePage = () => {
                     td: ({ children }) => <td className="p-4">{children}</td>,
                   }}
                 >
-                  {chain.guide}
+                  {guide}
                 </ReactMarkdown>
               </div>
             </div>
@@ -223,8 +251,10 @@ export const GuidePage = () => {
       <SearchModal
         isOpen={searchOpen}
         onClose={() => setSearchOpen(false)}
-        content={chain.guide}
+        content={guide}
       />
     </div>
   );
 };
+
+

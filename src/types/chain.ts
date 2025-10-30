@@ -38,6 +38,7 @@ export interface Chain {
   slug: string;
   service: ChainService | null;
   guide: string | null;
+  hasGuide: boolean;
 }
 
 export interface ValidatorStats {
