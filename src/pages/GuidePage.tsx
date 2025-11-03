@@ -1,75 +1,99 @@
-import { useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import { useChains } from "../hooks/useChains";
-import { useChainGuide } from "../hooks/useChainGuide";
-import { Logo } from "../components/Logo";
-import { GuideSidebar } from "../components/GuideSidebar";
-import { CodeBlock } from "../components/CodeBlock";
-import { SearchModal } from "@/components/SearchModal";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { Seo } from "@/components/Seo";
-import { buildCanonicalUrl, SITE_NAME, SITE_URL, DEFAULT_DESCRIPTION } from "@/config/site";
+import { useParams, Link } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { useChains } from '../hooks/useChains';
+import { useChainGuide } from '../hooks/useChainGuide';
+import { Logo } from '../components/Logo';
+import { GuideSidebar } from '../components/GuideSidebar';
+import { CodeBlock } from '../components/CodeBlock';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { useState } from 'react';
+import { SearchModal } from '@/components/SearchModal';
+import { Seo } from '@/components/Seo';
+import { buildCanonicalUrl, SITE_URL } from '@/config/site';
 
-type MarkdownComponents = Parameters<typeof ReactMarkdown>[0]["components"];
+const formatChainName = (slug: string) => slug
+  .split(/[-_]/)
+  .filter(Boolean)
+  .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+  .join(' ');
 
-const markdownComponents: MarkdownComponents = {
-  code({ inline, className, children, ...props }: any) {
-    const match = /language-(\w+)/.exec(className || "");
-    if (!inline && match) {
-      const code = Array.isArray(children)
-        ? children.join("")
-        : String(children ?? "");
-      return (
-        <CodeBlock className={className ?? ""}>
-          {code.replace(/\n$/, "")}
-        </CodeBlock>
-      );
-    }
-    return (
-      <code className={className} {...props}>
-        {children}
-      </code>
-    );
-  },
-  table({ children }) {
-    return (
-      <div className="overflow-x-auto rounded-lg border border-base-200">
-        <table className="table w-full">{children}</table>
-      </div>
-    );
-  },
-  th({ children }) {
-    return <th className="bg-base-200">{children}</th>;
-  },
-  td({ children }) {
-    return <td className="p-4">{children}</td>;
+const createOgImageUrl = (title: string, subtitle: string, options: { chainSlug?: string; badge?: string } = {}) => {
+  const url = new URL(`${SITE_URL}/api/og`);
+  url.searchParams.set('title', title);
+  url.searchParams.set('subtitle', subtitle);
+
+  if (options.chainSlug) {
+    url.searchParams.set('chain', options.chainSlug);
   }
+
+  if (options.badge) {
+    url.searchParams.set('badge', options.badge);
+  }
+
+  return url.toString();
 };
 
-const LoadingState = () => (
-  <div className="relative min-h-screen bg-transparent">
-    <div className="relative z-10 container mx-auto px-4 py-8">
-      <div className="flex justify-center items-center py-20">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
+const GuideSkeleton = () => (
+  <div className="relative bg-transparent flex flex-col">
+    <div className="relative z-10 flex flex-1">
+      <div className="hidden lg:block w-72 border-r border-base-300/50 bg-base-200/30">
+        <div className="p-6 space-y-4 animate-pulse">
+          <div className="h-5 w-40 bg-base-300/70 rounded" />
+          {Array.from({ length: 8 }).map((_, idx) => (
+            <div key={idx} className="h-4 w-56 bg-base-300/70 rounded" />
+          ))}
+        </div>
       </div>
-    </div>
-  </div>
-);
+      <main className="flex-1 overflow-auto">
+        <div className="w-full max-w-none px-4 sm:px-6 lg:px-8 py-8">
+          <div className="animate-pulse space-y-10">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-4">
+                <div className="h-9 w-9 bg-base-300/70 rounded-lg lg:hidden" />
+                <div className="h-4 w-48 bg-base-300/70 rounded" />
+              </div>
+              <div className="h-9 w-28 bg-base-300/70 rounded lg:hidden" />
+            </div>
 
-const ErrorState = ({ message, chainSlug }: { message: string; chainSlug?: string }) => (
-  <div className="relative min-h-screen bg-transparent">
-    <div className="relative z-10 container mx-auto px-4 py-8">
-      <div className="alert alert-error bg-base-200/70">
-        <svg className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <span>{message}</span>
-      </div>
-      <div className="mt-4">
-        <Link to="/" className="btn btn-primary">Back to Home</Link>
-      </div>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-full bg-base-300/70" />
+                <div className="space-y-3">
+                  <div className="h-8 w-64 bg-base-300/70 rounded" />
+                  <div className="h-4 w-56 bg-base-300/70 rounded" />
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <div className="h-10 w-32 bg-base-300/70 rounded" />
+                <div className="h-10 w-32 bg-base-300/70 rounded" />
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <div className="space-y-3">
+                <div className="h-5 w-48 bg-base-300/70 rounded" />
+                <div className="h-4 w-72 bg-base-300/70 rounded" />
+              </div>
+
+              {Array.from({ length: 4 }).map((_, idx) => (
+                <div key={idx} className="space-y-2">
+                  <div className="h-6 w-40 bg-base-300/70 rounded" />
+                  <div className="h-4 w-full bg-base-300/70 rounded" />
+                  <div className="h-4 w-11/12 bg-base-300/70 rounded" />
+                  <div className="h-4 w-4/5 bg-base-300/70 rounded" />
+                </div>
+              ))}
+
+              <div className="bg-base-200/70 border border-base-300/60 rounded-xl p-6 space-y-3">
+                <div className="h-4 w-32 bg-base-300/70 rounded" />
+                <div className="h-4 w-full bg-base-300/70 rounded" />
+                <div className="h-4 w-5/6 bg-base-300/70 rounded" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   </div>
 );
@@ -85,112 +109,60 @@ export const GuidePage = () => {
   const guideSlug = chain?.hasGuide ? chain.slug : null;
   const { guide, loading: guideLoading, error: guideError } = useChainGuide(guideSlug);
 
-  const canonicalPath = chainSlug ? `/${chainSlug}/guide` : "/guide";
-  const canonicalUrl = buildCanonicalUrl(canonicalPath);
-  const chainName = chain?.service?.chainName || chainSlug?.toUpperCase() || "Unknown";
+  const chainDisplayName =
+    chain?.service?.chainName?.trim() ||
+    (chain?.slug ? formatChainName(chain.slug) : null);
+  const fallbackDisplayName = chainDisplayName || (chainSlug ? formatChainName(chainSlug) : null);
+  const canonicalUrl = buildCanonicalUrl(chainSlug ? `/${chainSlug}/guide` : '/guides');
+  const seoTitle = chainDisplayName ? `Panduan ${chainDisplayName}` : 'Panduan Validator Blockchain';
+  const ogTitle = chainDisplayName ? `${chainDisplayName} Guide` : 'Validator Guide';
+  const ogSubtitle = chainDisplayName
+    ? 'Step-by-step validator operations with Crxanode'
+    : 'Infrastructure documentation by Crxanode';
+  const seoDescription = chainDisplayName
+    ? `Follow Crxanode's end-to-end guide for ${chainDisplayName}: node installation, validator configuration, RPC/API endpoints, snapshots, and operations checklists.`
+    : 'Explore Crxanode validator guides: node installation, validator configuration, and best practices for Cosmos SDK networks.';
+  const ogSlug = chain?.slug ?? chainSlug ?? undefined;
+  const seoOgImage = createOgImageUrl(ogTitle, ogSubtitle, {
+    chainSlug: ogSlug,
+    badge: 'GUIDE'
+  });
 
-  const plainGuide = useMemo(() => {
-    if (!guide) return null;
-    return guide
-      .replace(/```[\s\S]*?```/g, " ")
-      .replace(/[#>*`]/g, " ")
-      .replace(/\[(.*?)\]\((.*?)\)/g, "$1")
-      .replace(/\s+/g, " ")
-      .trim();
-  }, [guide]);
-
-  const guideDescription = plainGuide
-    ? `${plainGuide.slice(0, 150)}${plainGuide.length > 150 ? "..." : ""}`
-    : chainSlug
-    ? `Step-by-step installation instructions for ${chainName} validator node.`
-    : DEFAULT_DESCRIPTION;
-
-  const guideKeywords = useMemo(
-    () => (
-      chainSlug
-        ? [
-            chainName,
-            `${chainName} guide`,
-            `${chainName} installation`,
-            `${chainName} validator`,
-            "cosmos validator guide",
-            "node setup tutorial"
-          ]
-        : undefined
-    ),
-    [chainSlug, chainName]
-  );
-
-  const structuredGuideData = useMemo(() => {
-    if (!guide || !chain?.hasGuide || !plainGuide) return undefined;
-    return [
-      {
-        "@context": "https://schema.org",
-        "@type": "TechArticle",
-        headline: `${chainName} Installation Guide`,
-        about: chainName,
-        description: guideDescription,
-        articleBody: plainGuide,
-        wordCount: plainGuide.split(/\s+/).length,
-        author: {
-          "@type": "Organization",
-          name: SITE_NAME,
-          url: SITE_URL
-        },
-        publisher: {
-          "@type": "Organization",
-          name: SITE_NAME,
-          logo: {
-            "@type": "ImageObject",
-            url: `${SITE_URL}/logo.png`
-          }
-        },
-        mainEntityOfPage: canonicalUrl,
-        dateModified: new Date().toISOString()
-      }
-    ];
-  }, [guide, chain?.hasGuide, plainGuide, chainName, guideDescription, canonicalUrl]);
-
-  const ogImageUrl = `${SITE_URL}/api/og?title=${encodeURIComponent(`${chainName} Guide`)}&subtitle=${encodeURIComponent(guideDescription)}`;
-
-  if (loading || (guideLoading && !guide)) {
-    return (
-      <>
-        <Seo
-          title={`${chainSlug?.toUpperCase() ?? "Guide"} Installation Guide`}
-          description={guideDescription}
-          canonical={canonicalPath}
-          noindex
-          openGraph={{
-            type: "article",
-            url: canonicalUrl,
-            title: `${chainSlug?.toUpperCase() ?? "Guide"} Installation Guide | ${SITE_NAME}`,
-            description: guideDescription,
-            image: ogImageUrl
-          }}
-        />
-        <LoadingState />
-      </>
-    );
+  if ((loading && !chain) || (guideLoading && !guide)) {
+    return <GuideSkeleton />;
   }
 
   if (!chain) {
+    const missingDescription = `The guide for ${fallbackDisplayName ?? 'this chain'} is not available on Crxanode Docs yet.`;
     return (
       <>
         <Seo
-          title="Guide Not Found"
-          description="Requested guide could not be located."
-          canonical={canonicalPath}
-          noindex
+          title="Panduan Tidak Ditemukan"
+          description={missingDescription}
+          canonical={canonicalUrl}
           openGraph={{
-            type: "article",
+            title: 'Guide Not Found',
+            description: missingDescription,
             url: canonicalUrl,
-            title: "Guide Not Found | Crxanode Docs",
-            description: "Requested guide could not be located.",
-            image: ogImageUrl
+            image: createOgImageUrl('Guide Not Found', 'Crxanode Docs', {
+              chainSlug: chainSlug ?? undefined,
+              badge: 'GUIDE'
+            })
           }}
         />
-        <ErrorState message={`Chain "${chainSlug}" tidak ditemukan.`} chainSlug={chainSlug ?? undefined} />
+        <div className="relative min-h-screen bg-transparent">
+          <div className="relative z-10 container mx-auto px-4 py-8">
+            <div className="alert alert-error bg-base-200/70">
+              <svg className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Chain "${chainSlug}" tidak ditemukan.</span>
+            </div>
+            <div className="mt-4">
+              <Link to="/" className="btn btn-primary">Back to Home</Link>
+            </div>
+          </div>
+        </div>
       </>
     );
   }
@@ -199,24 +171,29 @@ export const GuidePage = () => {
     return (
       <>
         <Seo
-          title={`${chainName} Guide`}
-          description={guideError ? `Failed to load installation guide for ${chainName}.` : `Installation guide for ${chainName} is not available.`}
-          canonical={canonicalPath}
-          noindex
+          title={seoTitle}
+          description={seoDescription}
+          canonical={canonicalUrl}
           openGraph={{
-            type: "article",
+            title: ogTitle,
+            description: seoDescription,
             url: canonicalUrl,
-            title: `${chainName} Guide | ${SITE_NAME}`,
-            description: guideError
-              ? `Failed to load installation guide for ${chainName}.`
-              : `Installation guide for ${chainName} is not available.`,
-            image: ogImageUrl
+            image: seoOgImage
           }}
         />
-        <ErrorState
-          message={guideError ? `Gagal memuat panduan untuk "${chainSlug}".` : `Panduan untuk "${chainSlug}" tidak tersedia.`}
-          chainSlug={chainSlug ?? undefined}
-        />
+        <div className="relative min-h-screen bg-transparent">
+          <div className="relative z-10 container mx-auto px-4 py-8">
+            <div className="alert alert-error bg-base-200/70">
+              <svg className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>{guideError ? `Gagal memuat panduan untuk "${chainSlug}".` : `Panduan untuk "${chainSlug}" tidak tersedia.`}</span>
+            </div>
+            <div className="mt-4">
+              <Link to="/" className="btn btn-primary">Back to Home</Link>
+            </div>
+          </div>
+        </div>
       </>
     );
   }
@@ -225,108 +202,193 @@ export const GuidePage = () => {
     return null;
   }
 
+  const chainName = fallbackDisplayName ?? 'Unknown';
+
   return (
     <>
       <Seo
-        title={`${chainName} Installation Guide`}
-        description={guideDescription}
-        canonical={canonicalPath}
-        keywords={guideKeywords}
+        title={seoTitle}
+        description={seoDescription}
+        canonical={canonicalUrl}
         openGraph={{
-          type: "article",
+          title: ogTitle,
+          description: seoDescription,
           url: canonicalUrl,
-          title: `${chainName} Installation Guide | ${SITE_NAME}`,
-          description: guideDescription,
-          image: ogImageUrl
+          image: seoOgImage
         }}
-        structuredData={structuredGuideData}
       />
       <div className="relative bg-transparent flex flex-col">
-        <div className="relative z-10 flex flex-1">
-          <GuideSidebar
-            content={guide}
-            isOpen={sidebarOpen}
-            onClose={() => setSidebarOpen(false)}
-            onSearchOpen={() => setSearchOpen(true)}
-          />
+      <div className="relative z-10 flex flex-1">
+        {/* Left Sidebar */}
+        <GuideSidebar
+          content={guide}
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          onSearchOpen={() => setSearchOpen(true)}
+        />
 
-          <main className="flex-1 overflow-auto">
-            <div className="w-full max-w-none px-4 sm:px-6 lg:px-8 py-8">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-4">
-                  {isMobile && (
-                    <button
-                      onClick={() => setSidebarOpen(true)}
-                      className="btn btn-ghost btn-sm"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                      </svg>
-                    </button>
-                  )}
-                  <div className="breadcrumbs text-sm">
-                    <ul>
-                      <li><Link to="/" className="text-primary hover:text-secondary">Home</Link></li>
-                      <li>{chainName}</li>
-                      <li>Guide</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-                <div className="flex items-center gap-4">
-                  <Logo
-                    slug={chainSlug || ''}
-                    chainName={chainName}
-                    className="w-16 h-16"
-                  />
-                  <div>
-                    <h1 className="text-3xl font-bold text-base-content mb-2">
-                      {chainName} Installation Guide
-                    </h1>
-                    <p className="text-base-content/70">
-                      Step-by-step instructions for setting up your node
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex gap-2 mt-4 md:mt-0">
-                  {chain.service && (
-                    <Link
-                      to={`/${chainSlug}/service`}
-                      className="btn btn-primary btn-outline"
-                    >
-                      Service Overview
-                    </Link>
-                  )}
+        {/* Main Content */}
+        <main className="flex-1 overflow-auto">
+          <div className="w-full max-w-none px-4 sm:px-6 lg:px-8 py-8">
+            {/* Mobile Menu Button & Breadcrumb */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-4">
+                {isMobile && (
                   <button
-                    onClick={() => setSearchOpen(true)}
-                    className="btn btn-secondary btn-outline"
+                    onClick={() => setSidebarOpen(true)}
+                    className="btn btn-ghost btn-sm"
                   >
-                    Search Guide
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
                   </button>
+                )}
+                <div className="breadcrumbs text-sm">
+                  <ul>
+                    <li><Link to="/" className="text-primary hover:text-secondary">Home</Link></li>
+                    <li>{chainName}</li>
+                    <li>Guide</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Guide Header */}
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+              <div className="flex items-center gap-4">
+                <Logo
+                  slug={chainSlug || ''}
+                  chainName={chainName}
+                  className="w-16 h-16"
+                />
+                <div>
+                  <h1 className="text-3xl font-bold text-base-content mb-2">
+                    {chainName} Installation Guide
+                  </h1>
+                  <p className="text-base-content/70">
+                    Step-by-step instructions for setting up your node
+                  </p>
                 </div>
               </div>
 
+              <div className="flex gap-2 mt-4 md:mt-0">
+                {chain.service && (
+                  <Link
+                    to={`/${chainSlug}/service`}
+                    className="btn btn-primary btn-outline"
+                  >
+                     Service Endpoints
+                  </Link>
+                )}
+              </div>
+            </div>
+
+            {/* Guide Content */}
+            <div className="w-full max-w-none">
               <div className="prose prose-lg max-w-none">
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
-                  components={markdownComponents}
+                  components={{
+                    // Custom code blocks with copy functionality
+                    pre: ({ children, ...props }) => {
+                      const codeElement = children as any;
+                      const codeText = codeElement?.props?.children || '';
+                      if (typeof codeText === 'string') {
+                        return <CodeBlock>{codeText}</CodeBlock>;
+                      }
+                      return (
+                        <pre className="bg-base-300 text-base-content p-4 rounded-lg overflow-x-auto border" {...props}>
+                          {children}
+                        </pre>
+                      );
+                    },
+                    code: ({ children, className }) => {
+                      const isInline = !className;
+                      return isInline ? (
+                        <code className="bg-base-300 text-base-content px-2 py-1 rounded text-sm">
+                          {children}
+                        </code>
+                      ) : (
+                        <code className="text-base-content">{children}</code>
+                      );
+                    },
+                    // Custom styling for headings with IDs
+                    h1: ({ children }) => {
+                      const text = children?.toString() || '';
+                      const id = text.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+                      return (
+                        <h1 id={id} className="text-4xl font-bold text-base-content mb-6 border-b border-base-300 pb-3 scroll-mt-24">
+                          {children}
+                        </h1>
+                      );
+                    },
+                    h2: ({ children }) => {
+                      const text = children?.toString() || '';
+                      const id = text.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+                      return (
+                        <h2 id={id} className="text-2xl font-semibold text-base-content mt-8 mb-4 scroll-mt-24">
+                          {children}
+                        </h2>
+                      );
+                    },
+                    h3: ({ children }) => {
+                      const text = children?.toString() || '';
+                      const id = text.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+                      return (
+                        <h3 id={id} className="text-xl font-semibold text-base-content mt-6 mb-3 scroll-mt-24">
+                          {children}
+                        </h3>
+                      );
+                    },
+                    p: (props) => {
+                      const { node } = props as any;
+                      const line = node?.position?.start.line;
+                      return <p id={`line-${line}`}>{props.children}</p>;
+                    },
+                    // Custom styling for blockquotes
+                    blockquote: ({ children }) => (
+                      <blockquote className="border-l-4 border-primary bg-base-200/50 p-4 my-6 rounded-r-lg">
+                        {children}
+                      </blockquote>
+                    ),
+                    // Custom styling for links
+                    a: ({ href, children }) => (
+                      <a
+                        href={href}
+                        className="text-primary hover:text-secondary underline"
+                        target={href?.startsWith('http') ? '_blank' : undefined}
+                        rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+                      >
+                        {children}
+                      </a>
+                    ),
+                    table: ({ children }) => (
+                      <div className="overflow-x-auto my-6">
+                        <table className="table table-zebra w-full">{children}</table>
+                      </div>
+                    ),
+                    thead: ({ children }) => <thead className="bg-base-200">{children}</thead>,
+                    th: ({ children }) => <th className="p-4 font-semibold text-left">{children}</th>,
+                    td: ({ children }) => <td className="p-4">{children}</td>,
+                  }}
                 >
                   {guide}
                 </ReactMarkdown>
               </div>
             </div>
-          </main>
-        </div>
-
-        <SearchModal
-          isOpen={searchOpen}
-          onClose={() => setSearchOpen(false)}
-          content={guide}
-        />
+          </div>
+        </main>
       </div>
+
+      <SearchModal
+        isOpen={searchOpen}
+        onClose={() => setSearchOpen(false)}
+        content={guide}
+      />
+    </div>
     </>
   );
 };
+
+
+
