@@ -16,9 +16,29 @@ export default async function handler(req: Request) {
   const title = decodeURIComponent(searchParams.get('title') ?? DEFAULT_TITLE);
   const subtitle = decodeURIComponent(searchParams.get('subtitle') ?? DEFAULT_SUBTITLE);
   const badge = searchParams.get('badge');
-  const hostHeader = req.headers.get('host') ?? 'docs.crxanode.me';
-  const protocol = hostHeader.startsWith('localhost') ? 'http' : 'https';
-  const baseUrl = `${protocol}://${hostHeader}`;
+
+  const envSiteUrl =
+    process.env.SITE_BASE_URL ??
+    process.env.NEXT_PUBLIC_SITE_BASE_URL ??
+    null;
+  const normalizedEnvUrl = envSiteUrl
+    ? envSiteUrl.trim().replace(/\/$/, '')
+    : null;
+
+  const forwardedHost = req.headers.get('x-forwarded-host');
+  const hostHeader = forwardedHost ?? req.headers.get('host') ?? 'docs.crxanode.me';
+  const hostWithoutPort = hostHeader.split(':')[0]?.toLowerCase() ?? hostHeader.toLowerCase();
+  const isLocalHost =
+    hostWithoutPort === 'localhost' ||
+    hostWithoutPort === '127.0.0.1' ||
+    hostWithoutPort === '::1' ||
+    hostWithoutPort.startsWith('192.168.') ||
+    hostWithoutPort.startsWith('10.') ||
+    hostWithoutPort === '0.0.0.0';
+  const forwardedProto = req.headers.get('x-forwarded-proto');
+  const fallbackProtocol = forwardedProto ?? (isLocalHost ? 'http' : 'https');
+  const derivedBaseUrl = `${fallbackProtocol}://${hostHeader}`;
+  const baseUrl = (normalizedEnvUrl ?? derivedBaseUrl).replace(/\/$/, '');
   const siteLogoUrl = `${baseUrl}/logo.png`;
 
   const rawChainSlug = searchParams.get('chain');

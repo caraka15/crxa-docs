@@ -122,7 +122,7 @@ export const ServicePage = () => {
     (chain?.slug ? formatChainName(chain.slug) : null);
   const fallbackDisplayName = chainDisplayName || (chainSlug ? formatChainName(chainSlug) : null);
   const canonicalUrl = buildCanonicalUrl(chainSlug ? `/${chainSlug}/service` : '/service');
-  const seoTitle = chainDisplayName ? `Layanan ${chainDisplayName}` : 'Layanan Validator Blockchain';
+  const seoTitle = chainDisplayName ? `${chainDisplayName} Service` : 'Validator Service';
   const ogTitle = chainDisplayName ? `${chainDisplayName} Service Endpoints` : 'Validator Service Endpoints';
   const ogSubtitle = chainDisplayName
     ? 'RPC, API, gRPC, peers, and snapshots by Crxanode'
@@ -158,7 +158,7 @@ export const ServicePage = () => {
     return (
       <>
         <Seo
-          title="Layanan Tidak Ditemukan"
+          title="Service Not Found"
           description={missingDescription}
           canonical={canonicalUrl}
           openGraph={{

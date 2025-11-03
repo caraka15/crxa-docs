@@ -114,8 +114,8 @@ export const GuidePage = () => {
     (chain?.slug ? formatChainName(chain.slug) : null);
   const fallbackDisplayName = chainDisplayName || (chainSlug ? formatChainName(chainSlug) : null);
   const canonicalUrl = buildCanonicalUrl(chainSlug ? `/${chainSlug}/guide` : '/guides');
-  const seoTitle = chainDisplayName ? `Panduan ${chainDisplayName}` : 'Panduan Validator Blockchain';
-  const ogTitle = chainDisplayName ? `${chainDisplayName} Guide` : 'Validator Guide';
+  const seoTitle = chainDisplayName ? `${chainDisplayName} Guide` : 'Validator Guide';
+  const ogTitle = seoTitle;
   const ogSubtitle = chainDisplayName
     ? 'Step-by-step validator operations with Crxanode'
     : 'Infrastructure documentation by Crxanode';
@@ -137,7 +137,7 @@ export const GuidePage = () => {
     return (
       <>
         <Seo
-          title="Panduan Tidak Ditemukan"
+          title="Guide Not Found"
           description={missingDescription}
           canonical={canonicalUrl}
           openGraph={{
@@ -156,7 +156,7 @@ export const GuidePage = () => {
               <svg className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span>Chain "${chainSlug}" tidak ditemukan.</span>
+              <span>Chain "{chainSlug}" was not found.</span>
             </div>
             <div className="mt-4">
               <Link to="/" className="btn btn-primary">Back to Home</Link>
@@ -187,7 +187,7 @@ export const GuidePage = () => {
               <svg className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span>{guideError ? `Gagal memuat panduan untuk "${chainSlug}".` : `Panduan untuk "${chainSlug}" tidak tersedia.`}</span>
+              <span>{guideError ? `Failed to load the guide for "${chainSlug}".` : `Guide for "${chainSlug}" is not available.`}</span>
             </div>
             <div className="mt-4">
               <Link to="/" className="btn btn-primary">Back to Home</Link>
