@@ -1,0 +1,15 @@
+{
+    "chainName": "SAFROCHAIN",
+    "api": "https://safrochain-api.crxanode.me",
+    "rpc": "https://safrochain-rpc.crxanode.me",
+    "grpc": "safrochain-grpc.crxanode.me:443",
+    "peer": "8c15b94349e3dcd8bd4d0ca8dfea4dae9f6ad6bd@safrochain-rpc.crxanode.me:31656",
+    "addrbook": "https://cdn.crxanode.me/safrochain/addrbook.json",
+    "genesis": "https://cdn.crxanode.me/safrochain/genesis.json",
+    "valoper": "addr_safrovaloper1nr0m7gw245rtr5e3vev0p9t5278qj05sv88v6t",
+    "valcons": "addr_safrovalcons1z3l2gjxqnpdmd3r02xdt6eldwcn82at0xqwc5z",
+    "dir": "~/.safrochain",
+    "type": "testnet",
+    "denom": "usafro",
+    "decimals": 6
+}
