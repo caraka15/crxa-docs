@@ -128,8 +128,27 @@ export const GuidePage = () => {
     badge: 'GUIDE'
   });
 
+  const renderSeo = (
+    <Seo
+      title={seoTitle}
+      description={seoDescription}
+      canonical={canonicalUrl}
+      openGraph={{
+        title: ogTitle,
+        description: seoDescription,
+        url: canonicalUrl,
+        image: seoOgImage
+      }}
+    />
+  );
+
   if ((loading && !chain) || (guideLoading && !guide)) {
-    return <GuideSkeleton />;
+    return (
+      <>
+        {renderSeo}
+        <GuideSkeleton />
+      </>
+    );
   }
 
   if (!chain) {
@@ -206,17 +225,7 @@ export const GuidePage = () => {
 
   return (
     <>
-      <Seo
-        title={seoTitle}
-        description={seoDescription}
-        canonical={canonicalUrl}
-        openGraph={{
-          title: ogTitle,
-          description: seoDescription,
-          url: canonicalUrl,
-          image: seoOgImage
-        }}
-      />
+      {renderSeo}
       <div className="relative bg-transparent flex flex-col">
       <div className="relative z-10 flex flex-1">
         {/* Left Sidebar */}

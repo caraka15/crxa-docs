@@ -148,7 +148,22 @@ export const ServicePage = () => {
   }, [chainSlug, chain?.hasGuide, queryClient]);
 
   if (loading) {
-    return <ServiceSkeleton />;
+    return (
+      <>
+        <Seo
+          title={seoTitle}
+          description={seoDescription}
+          canonical={canonicalUrl}
+          openGraph={{
+            title: ogTitle,
+            description: seoDescription,
+            url: canonicalUrl,
+            image: seoOgImage
+          }}
+        />
+        <ServiceSkeleton />
+      </>
+    );
   }
 
   if (!chain || !chain.service) {
