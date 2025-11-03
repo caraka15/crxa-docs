@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <>
       <Seo
-        title="Cosmos Validator Documentation"
+        title="Crxa Validator Documentation"
         description={DEFAULT_DESCRIPTION}
         canonical="/"
         openGraph={{
