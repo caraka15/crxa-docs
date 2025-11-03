@@ -10,6 +10,64 @@
   <link rel="apple-touch-icon" href="/logo.png" />
   <meta name="theme-color" content="#0f172a" />
 
+  <!-- OG meta will be injected server-side by Edge Middleware here -->
+  <!--__OG_META_INJECTION__-->
+
+  <script>
+    (function () {
+      try {
+        var el = document.getElementById('__OG_INJECT__');
+        if (!el) return;
+        var data = JSON.parse(el.textContent || '{}');
+        var head = document.getElementsByTagName('head')[0];
+
+        function setMeta(property, content, attr) {
+          if (!content) return;
+          var selector = attr + '="' + property + '"';
+          var existing = head.querySelector('meta[' + selector + ']');
+          if (!existing) {
+            existing = document.createElement('meta');
+            existing.setAttribute(attr, property);
+            head.appendChild(existing);
+          }
+          existing.setAttribute('content', content);
+        }
+
+        if (data.title) {
+          var t = head.querySelector('title') || document.createElement('title');
+          t.textContent = data.title;
+          if (!t.parentNode) head.appendChild(t);
+          setMeta('og:title', data.title, 'property');
+          setMeta('twitter:title', data.title, 'name');
+        }
+        if (data.description) {
+          setMeta('description', data.description, 'name');
+          setMeta('og:description', data.description, 'property');
+          setMeta('twitter:description', data.description, 'name');
+        }
+        if (data.siteName) setMeta('og:site_name', data.siteName, 'property');
+        if (data.canonical) {
+          var link = head.querySelector('link[rel="canonical"]') || document.createElement('link');
+          link.setAttribute('rel', 'canonical');
+          link.setAttribute('href', data.canonical);
+          if (!link.parentNode) head.appendChild(link);
+          setMeta('og:url', data.canonical, 'property');
+          setMeta('twitter:url', data.canonical, 'name');
+        }
+        if (data.image) {
+          setMeta('og:image', data.image, 'property');
+          setMeta('twitter:image', data.image, 'name');
+          setMeta('og:image:width', '1200', 'property');
+          setMeta('og:image:height', '630', 'property');
+        }
+        setMeta('og:type', 'website', 'property');
+        setMeta('twitter:card', data.twitterCard || 'summary_large_image', 'name');
+      } catch (e) {
+        // swallow
+      }
+    })();
+  </script>
+
   <script>
     // Initialize theme from localStorage to prevent flash
     (function () {

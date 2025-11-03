@@ -9,10 +9,17 @@
     }
   ],
   "compilerOptions": {
+    "typeRoots": [
+      "./types",
+      "./node_modules/@types"
+    ],
     "baseUrl": ".",
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "next/server": [
+        "./types/next-server.d.ts"
       ]
     },
     "noImplicitAny": false,
