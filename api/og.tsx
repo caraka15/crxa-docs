@@ -1,7 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference types="@vercel/og" />
 
-import React from 'react';
 import { ImageResponse } from '@vercel/og';
 
 export const config = {
