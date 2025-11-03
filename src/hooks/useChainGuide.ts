@@ -11,7 +11,14 @@ export const fetchGuideContent = async (slug: string): Promise<string> => {
   return response.text();
 };
 
-export const useChainGuide = (slug?: string | null) => {
+export interface UseChainGuideResult {
+  guide: string | null;
+  loading: boolean;
+  error: string | null;
+  isFetching: boolean;
+}
+
+export const useChainGuide = (slug?: string | null): UseChainGuideResult => {
   const {
     data,
     error,
@@ -31,5 +38,10 @@ export const useChainGuide = (slug?: string | null) => {
   const fetchError =
     error instanceof Error ? error.message : error ? String(error) : null;
 
-  return { guide, loading, error: fetchError, isFetching: Boolean(slug) && isFetching };
+  return {
+    guide,
+    loading,
+    error: fetchError,
+    isFetching: Boolean(slug) && isFetching
+  };
 };

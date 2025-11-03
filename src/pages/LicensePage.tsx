@@ -1,9 +1,17 @@
 import { FC } from "react";
 import { Link } from "react-router-dom";
+import { Seo } from "@/components/Seo";
 
 const LicensePage: FC = () => {
   return (
-    <div className="container mx-auto px-6 py-12 max-w-4xl">
+    <>
+      <Seo
+        title="Service License"
+        description="CRXANODE service and documentation license terms."
+        canonical="/license"
+        noindex
+      />
+      <div className="container mx-auto px-6 py-12 max-w-4xl">
       <h1 className="text-4xl font-bold mb-6 text-center">CRXANODE Service License</h1>
 
       <div className="prose dark:prose-invert prose-lg max-w-none">
@@ -120,6 +128,7 @@ const LicensePage: FC = () => {
         </Link>
       </div>
     </div>
+    </>
   );
 };
 
