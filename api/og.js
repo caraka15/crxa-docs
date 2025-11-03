@@ -1,7 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference
-/// <reference types="@vercel/og" />
-
-import React from 'react';
 import { ImageResponse } from '@vercel/og';
 
 export const config = {
@@ -11,7 +7,7 @@ export const config = {
 const DEFAULT_TITLE = 'Crxanode Docs';
 const DEFAULT_SUBTITLE = 'Validator Services & Guides';
 
-export default async function handler(req: Request) {
+export default async function handler(req) {
   const { searchParams } = new URL(req.url);
 
   const title = decodeURIComponent(searchParams.get('title') ?? DEFAULT_TITLE);
