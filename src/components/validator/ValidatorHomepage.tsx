@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useChains } from '@/hooks/useChains';
 import { useAggregateStats } from '@/hooks/useAggregateStats';
@@ -9,8 +9,6 @@ import { StatusIndicator } from '@/components/StatusIndicator';
 import { ChainService, ValidatorStats, Chain } from '@/types/chain';
 import validatorData from '@/data/validator-data.json';
 import { Shield, TrendingUp, Users, DollarSign, ExternalLink, Zap, Lock, HeartHandshake, Sparkles, ArrowRight, CheckCircle2 } from 'lucide-react';
-import { useQueryClient } from '@tanstack/react-query';
-import { chainGuideQueryKey, fetchGuideContent } from '@/hooks/useChainGuide';
 
 const LOGO_BASE_URL = 'https://explorer.crxanode.me/logos/';
 const EXTENSIONS = ['png', 'svg', 'jpg'];
@@ -103,22 +101,11 @@ const NetworkCardSkeleton: React.FC = () => (
 );
 
 const NetworkCard: React.FC<{ chain: Chain, stats: ValidatorStats | undefined }> = ({ chain, stats }) => {
-  const queryClient = useQueryClient();
   if (!chain.service) {
     return <NetworkCardSkeleton />;
   }
   const explorerUrl = getExplorerStakingUrl(chain.service!);
   const showPlaceholder = !stats || stats.loading || stats.error;
-
-  const handleGuidePrefetch = useCallback(() => {
-    if (!chain.hasGuide) {
-      return;
-    }
-    queryClient.prefetchQuery({
-      queryKey: chainGuideQueryKey(chain.slug),
-      queryFn: () => fetchGuideContent(chain.slug)
-    });
-  }, [chain.hasGuide, chain.slug, queryClient]);
 
   return (
     <Card className="group relative overflow-hidden hover:shadow-2xl hover:shadow-primary/40 hover:border-primary hover:-translate-y-2 hover:scale-[1.03] transition-all duration-500 ease-out bg-base-200/70 border-base-300 before:absolute before:inset-0 before:bg-gradient-to-br before:from-primary/0 before:via-primary/0 before:to-primary/0 hover:before:from-primary/10 hover:before:via-primary/5 hover:before:to-transparent before:transition-all before:duration-500">
@@ -171,8 +158,6 @@ const NetworkCard: React.FC<{ chain: Chain, stats: ValidatorStats | undefined }>
             <Link
               to={`/${chain.slug}/guide`}
               onClick={(e) => !chain.hasGuide && e.preventDefault()}
-              onMouseEnter={handleGuidePrefetch}
-              onFocus={handleGuidePrefetch}
             >
               Guide
             </Link>

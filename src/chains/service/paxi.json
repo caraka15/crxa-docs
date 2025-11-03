@@ -1,0 +1,10 @@
+{
+    "chainName": "PAXI",
+    "api": "https://paxi-api.crxanode.me",
+    "rpc": "https://paxi-rpc.crxanode.me",
+    "grpc": "paxi-grpc.crxanode.me:443",
+    "peer": "a93943e7b145eee76860e70aa042aabda699ab43@paxi-rpc.crxanode.me",
+    "addrbook": "https://files.crxanode.me/paxi/addrbook.json",
+    "genesis": "https://files.crxanode.me/paxi/genesis.json",
+    "valoper": "paxivaloper1d4d4z8n6km92p4f7afy4u4rqgyumv45u468tln"
+}

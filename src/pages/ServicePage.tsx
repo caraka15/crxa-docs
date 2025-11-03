@@ -1,10 +1,7 @@
-import { useEffect } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 import { CopyButton } from '../components/CopyButton';
 import { BlockHeight } from '../components/BlockHeight';
 import { useParams, Link } from 'react-router-dom';
 import { useChains } from '../hooks/useChains';
-import { chainGuideQueryKey, fetchGuideContent } from '../hooks/useChainGuide';
 import { EndpointCard } from '../components/EndpointCard';
 import { SnapshotTable } from '../components/SnapshotTable';
 import { Logo } from '../components/Logo';
@@ -113,8 +110,6 @@ const ServiceSkeleton = () => (
 export const ServicePage = () => {
   const { chain: chainSlug } = useParams<{ chain: string }>();
   const { getChain, loading } = useChains();
-  const queryClient = useQueryClient();
-
   const chain = chainSlug ? getChain(chainSlug) : undefined;
 
   const chainDisplayName =
@@ -135,17 +130,6 @@ export const ServicePage = () => {
     chainSlug: ogSlug,
     badge: 'SERVICE'
   });
-
-  useEffect(() => {
-    if (!chainSlug || !chain?.hasGuide) {
-      return;
-    }
-
-    queryClient.prefetchQuery({
-      queryKey: chainGuideQueryKey(chainSlug),
-      queryFn: () => fetchGuideContent(chainSlug)
-    });
-  }, [chainSlug, chain?.hasGuide, queryClient]);
 
   if (loading) {
     return (
