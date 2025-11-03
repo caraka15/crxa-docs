@@ -1,9 +1,16 @@
 const DEFAULT_SITE_URL = 'https://docs.crxanode.me';
 
 const resolveSiteUrl = (): string => {
-  const envUrl = typeof import.meta !== 'undefined'
-    ? (import.meta.env?.VITE_SITE_BASE_URL as string | undefined)
-    : undefined;
+  let envUrl: string | undefined;
+  if (typeof import.meta !== 'undefined') {
+    envUrl =
+      (import.meta.env?.VITE_SITE_BASE_URL as string | undefined) ||
+      (import.meta.env?.SITE_BASE_URL as string | undefined);
+  }
+
+  if (!envUrl && typeof process !== 'undefined') {
+    envUrl = process.env.VITE_SITE_BASE_URL || process.env.SITE_BASE_URL || undefined;
+  }
 
   if (envUrl) {
     return envUrl.replace(/\/$/, '');

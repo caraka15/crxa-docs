@@ -33,6 +33,10 @@ const DEFAULT_DESCRIPTION =
   'Comprehensive documentation for Crxanode validator services: API endpoints, node setup guides, snapshots, and infrastructure best practices for Cosmos SDK chains.';
 const DEFAULT_OG_IMAGE =
   '/api/og?title=Crxanode%20Docs&subtitle=Validator%20infrastructure%20%26%20guides%20for%20Cosmos%20SDK%20chains.';
+const CHAIN_NAME_OVERRIDES: Record<string, string> = {
+  safrochain: 'SAFROCHAIN',
+  paxi: 'PAXI',
+};
 
 const HOME_KEYWORDS = [
   'crxanode',
@@ -130,7 +134,7 @@ const getLicenseMeta = (): NormalizedMeta => {
 };
 
 const buildServiceMeta = (slug: string): NormalizedMeta => {
-  const chainDisplay = formatChainName(slug);
+  const chainDisplay = CHAIN_NAME_OVERRIDES[slug] ?? formatChainName(slug);
   const rawTitle = `${chainDisplay} Service`;
   const title = withSiteName(chainDisplay ? rawTitle : 'Validator Service');
   const description = chainDisplay
@@ -161,18 +165,16 @@ const buildServiceMeta = (slug: string): NormalizedMeta => {
 };
 
 const buildGuideMeta = (slug: string): NormalizedMeta => {
-  const chainDisplay = formatChainName(slug);
+  const chainDisplay = CHAIN_NAME_OVERRIDES[slug] ?? formatChainName(slug);
   const rawTitle = chainDisplay ? `${chainDisplay} Guide` : 'Validator Guide';
   const title = withSiteName(rawTitle);
   const description = chainDisplay
     ? `Follow Crxanode's end-to-end guide for ${chainDisplay}: node installation, validator configuration, RPC/API endpoints, snapshots, and operations checklists.`
     : "Explore Crxanode validator guides: node installation, validator configuration, and best practices for Cosmos SDK networks.";
-  const ogTitle = chainDisplay
-    ? `${chainDisplay} Guide & Operations`
-    : 'Validator Guide & Operations';
+  const ogTitle = rawTitle;
   const ogSubtitle = chainDisplay
-    ? 'Installation, validator setup, RPC/API, and operations checklist'
-    : 'Node installation, configuration, snapshots, and best practices';
+    ? 'Step-by-step validator operations with Crxanode'
+    : 'Infrastructure documentation by Crxanode';
   const ogImage = createOgImagePath(ogTitle, ogSubtitle, { chainSlug: slug, badge: 'GUIDE' });
 
   return {
@@ -320,10 +322,13 @@ function buildInjection(meta: NormalizedMeta, req: Request): string {
     canonicalEscaped && `<link rel="canonical" href="${canonicalEscaped}">`,
     canonicalEscaped && `<meta property="og:url" content="${canonicalEscaped}">`,
     ogImage && `<meta property="og:image" content="${ogImage}">`,
+    ogImage && `<meta property="og:image:width" content="1200">`,
+    ogImage && `<meta property="og:image:height" content="630">`,
     twitterCard && `<meta name="twitter:card" content="${twitterCard}">`,
     twitterTitle && `<meta name="twitter:title" content="${twitterTitle}">`,
     twitterDescription && `<meta name="twitter:description" content="${twitterDescription}">`,
     twitterImage && `<meta name="twitter:image" content="${twitterImage}">`,
+    canonicalEscaped && `<meta name="twitter:url" content="${canonicalEscaped}">`,
     keywordsValue && `<meta name="keywords" content="${keywordsValue}">`,
     robots && `<meta name="robots" content="${robots}">`,
   ];
