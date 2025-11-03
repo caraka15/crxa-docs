@@ -17,9 +17,6 @@
     "paths": {
       "@/*": [
         "./src/*"
-      ],
-      "next/server": [
-        "./types/next-server.d.ts"
       ]
     },
     "noImplicitAny": false,

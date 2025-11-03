@@ -1,5 +1,3 @@
-import { NextResponse, type NextRequest } from 'next/server';
-
 // Edge Middleware to inject OG <meta> tags into the served HTML for the Vite SPA on Vercel.
 // Strategy:
 // - Untuk permintaan dokumen HTML, middleware mengambil respons upstream dan menyisipkan OG tags
@@ -257,8 +255,9 @@ function escapeJsonForHtml(json: string) {
   return json.replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026');
 }
 
-function buildInjection(meta: NormalizedMeta, req: NextRequest): string {
-  const origin = req.nextUrl.origin;
+function buildInjection(meta: NormalizedMeta, req: Request): string {
+  const url = new URL(req.url);
+  const origin = url.origin;
   const abs = (url?: string) => {
     if (!url) return undefined;
     if (/^https?:\/\//i.test(url)) return url;
@@ -286,7 +285,7 @@ function buildInjection(meta: NormalizedMeta, req: NextRequest): string {
   const title = meta.title ? escapeHtml(meta.title) : undefined;
   const description = meta.description ? escapeHtml(meta.description) : undefined;
   const siteName = meta.siteName ? escapeHtml(meta.siteName) : undefined;
-  const canonical = abs(meta.canonical ?? req.nextUrl.pathname);
+  const canonical = abs(meta.canonical ?? url.pathname);
   const canonicalEscaped = canonical ? escapeHtml(canonical) : undefined;
 
   const ogTitleRaw = meta.ogTitle ?? meta.title;
@@ -343,39 +342,40 @@ function buildInjection(meta: NormalizedMeta, req: NextRequest): string {
   return `\n<!-- OG INJECT START -->\n${allTags}\n<!-- OG INJECT END -->\n`;
 }
 
-export default async function middleware(req: NextRequest) {
-    const { pathname } = req.nextUrl;
+export default async function middleware(req: Request) {
+  const url = new URL(req.url);
+  const pathname = url.pathname;
 
-    // Only handle direct document navigations likely to return HTML
-    const accept = req.headers.get('accept') || '';
-    const isDocument = accept.includes('text/html');
-    if (!isDocument) return NextResponse.next();
+  const accept = req.headers.get('accept') || '';
+  const isDocument = !accept || accept.includes('text/html');
+  if (!isDocument) return fetch(req);
 
-    const meta = chooseMeta(pathname);
-    if (!meta) return NextResponse.next();
+  const meta = chooseMeta(pathname);
+  if (!meta) return fetch(req);
 
-    // Fetch upstream response (Vercel static file atau Vite SPA index.html)
-    const res = await fetch(req);
-    const contentType = res.headers.get('content-type') || '';
-    if (!contentType.includes('text/html')) return res;
+  const res = await fetch(req);
+  const contentType = res.headers.get('content-type') || '';
+  if (!contentType.includes('text/html')) return res;
 
-    const html = await res.text();
+  const html = await res.text();
 
-    // Look for injection placeholder; if missing, inject before </head>
-    const injection = buildInjection(meta, req);
-    let transformed = html;
-    const placeholder = '<!--__OG_META_INJECTION__-->';
-    if (html.includes(placeholder)) {
-      transformed = html.replace(placeholder, `${placeholder}${injection}`);
-    } else {
-      transformed = html.replace('</head>', `${injection}</head>`);
-    }
+  const injection = buildInjection(meta, req);
+  let transformed = html;
+  const placeholder = '<!--__OG_META_INJECTION__-->';
+  if (html.includes(placeholder)) {
+    transformed = html.replace(placeholder, `${placeholder}${injection}`);
+  } else {
+    transformed = html.replace('</head>', `${injection}</head>`);
+  }
 
-  const response = new NextResponse(transformed, {
-    headers: res.headers,
-    status: res.status,
-  });
+  const headers = new Headers(res.headers);
+  headers.delete('content-encoding');
+  headers.set('content-type', 'text/html; charset=utf-8');
   const length = new TextEncoder().encode(transformed).length.toString();
-  response.headers.set('content-length', length);
-  return response;
+  headers.set('content-length', length);
+
+  return new Response(transformed, {
+    status: res.status,
+    headers,
+  });
 }

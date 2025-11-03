@@ -23,10 +23,8 @@
 
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "next/server": ["./types/next-server.d.ts"]
-    },
-    "typeRoots": ["./types", "./node_modules/@types"]
+      "@/*": ["./src/*"]
+    }
   },
-  "include": ["src", "types"]
+  "include": ["src"]
 }
