@@ -12,9 +12,9 @@ export default function Home() {
         openGraph={{
           type: 'website',
           url: SITE_URL,
-          title: `${SITE_NAME} - Cosmos Validator Documentation`,
+          title: `${SITE_NAME} - Crxa Validator Documentation`,
           description: DEFAULT_DESCRIPTION,
-          image: `${SITE_URL}/api/og?title=${encodeURIComponent('Cosmos Validator Documentation')}&subtitle=${encodeURIComponent(SITE_TAGLINE)}`
+          image: `${SITE_URL}/api/og?title=${encodeURIComponent('Crxa Validator Documentation')}&subtitle=${encodeURIComponent(SITE_TAGLINE)}`
         }}
         keywords={[
           'crxanode',
