@@ -31,7 +31,7 @@ export const useChains = (options: UseChainsOptions = {}) => {
   return {
     chains,
     loading: false,
-    error: null,
+    error: null as string | null,
     getChain
   };
 };
