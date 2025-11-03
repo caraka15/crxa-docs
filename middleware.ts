@@ -347,7 +347,11 @@ export default async function middleware(req: Request) {
   const pathname = url.pathname;
 
   const accept = req.headers.get('accept') || '';
-  const isDocument = !accept || accept.includes('text/html');
+  const isDocument =
+    !accept ||
+    accept.includes('text/html') ||
+    accept === '*/*' ||
+    accept.includes('*/*');
   if (!isDocument) return fetch(req);
 
   const meta = chooseMeta(pathname);
