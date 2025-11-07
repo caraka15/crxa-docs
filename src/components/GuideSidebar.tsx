@@ -98,12 +98,12 @@ export function GuideSidebar({ content, isOpen, onClose, onSearchOpen }: GuideSi
               </div>
               <button
                 onClick={onSearchOpen}
-                className="btn btn-ghost btn-sm w-full justify-start gap-2"
+                className="w-full flex items-center gap-2 px-3 py-2 bg-base-200 hover:bg-base-300 rounded-lg text-sm text-base-content/70 hover:text-base-content transition-colors cursor-pointer"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-                Search...
+                <span>Search...</span>
               </button>
             </div>
 
@@ -138,12 +138,12 @@ export function GuideSidebar({ content, isOpen, onClose, onSearchOpen }: GuideSi
           </div>
           <button
             onClick={onSearchOpen}
-            className="btn btn-ghost btn-sm w-full justify-start gap-2"
+            className="w-full flex items-center gap-2 px-3 py-2 bg-base-200 hover:bg-base-300 rounded-lg text-sm text-base-content/70 hover:text-base-content transition-colors cursor-pointer"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
-            Search...
+            <span>Search...</span>
           </button>
         </div>
 

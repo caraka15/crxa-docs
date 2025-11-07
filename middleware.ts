@@ -20,6 +20,8 @@ type NormalizedMeta = {
   ogDescription?: string;
   ogImage?: string;
   ogType?: string;
+  ogLocale?: string;
+  ogImageType?: string;
   twitterCard?: 'summary' | 'summary_large_image' | 'app' | 'player';
   twitterTitle?: string;
   twitterDescription?: string;
@@ -33,6 +35,8 @@ const DEFAULT_DESCRIPTION =
   'Comprehensive documentation for Crxanode validator services: API endpoints, node setup guides, snapshots, and infrastructure best practices for Cosmos SDK chains.';
 const DEFAULT_OG_IMAGE =
   '/api/og?title=Crxanode%20Docs&subtitle=Validator%20infrastructure%20%26%20guides%20for%20Cosmos%20SDK%20chains.';
+const DEFAULT_OG_LOCALE = 'en_US';
+const DEFAULT_OG_IMAGE_TYPE = 'image/png';
 const CHAIN_NAME_OVERRIDES: Record<string, string> = {
   safrochain: 'SAFROCHAIN',
   paxi: 'PAXI',
@@ -102,6 +106,8 @@ const getHomeMeta = (): NormalizedMeta => {
     ogDescription: description,
     ogImage,
     ogType: 'website',
+    ogLocale: DEFAULT_OG_LOCALE,
+    ogImageType: DEFAULT_OG_IMAGE_TYPE,
     twitterCard: 'summary_large_image',
     twitterTitle: ogTitle,
     twitterDescription: description,
@@ -125,6 +131,8 @@ const getLicenseMeta = (): NormalizedMeta => {
     ogDescription: description,
     ogImage: DEFAULT_OG_IMAGE,
     ogType: 'website',
+    ogLocale: DEFAULT_OG_LOCALE,
+    ogImageType: DEFAULT_OG_IMAGE_TYPE,
     twitterCard: 'summary_large_image',
     twitterTitle: title,
     twitterDescription: description,
@@ -154,6 +162,8 @@ const buildServiceMeta = (slug: string): NormalizedMeta => {
     canonical: `/${slug}/service`,
     siteName: SITE_NAME,
     ogTitle,
+    ogLocale: DEFAULT_OG_LOCALE,
+    ogImageType: DEFAULT_OG_IMAGE_TYPE,
     ogDescription: description,
     ogImage,
     ogType: 'website',
@@ -183,6 +193,8 @@ const buildGuideMeta = (slug: string): NormalizedMeta => {
     canonical: `/${slug}/guide`,
     siteName: SITE_NAME,
     ogTitle,
+    ogLocale: DEFAULT_OG_LOCALE,
+    ogImageType: DEFAULT_OG_IMAGE_TYPE,
     ogDescription: description,
     ogImage,
     ogType: 'website',
@@ -205,6 +217,8 @@ const getFallbackMeta = (pathname: string): NormalizedMeta => {
     ogDescription: DEFAULT_DESCRIPTION,
     ogImage: DEFAULT_OG_IMAGE,
     ogType: 'website',
+    ogLocale: DEFAULT_OG_LOCALE,
+    ogImageType: DEFAULT_OG_IMAGE_TYPE,
     twitterCard: 'summary_large_image',
     twitterTitle: title,
     twitterDescription: DEFAULT_DESCRIPTION,
@@ -299,6 +313,8 @@ function buildInjection(meta: NormalizedMeta, req: Request): string {
   const ogDescription = ogDescriptionRaw ? escapeHtml(ogDescriptionRaw) : undefined;
   const ogType = ogTypeRaw ? escapeHtml(ogTypeRaw) : undefined;
   const ogImage = ogImageAbs ? escapeHtml(ogImageAbs) : undefined;
+  const ogLocale = meta.ogLocale ? escapeHtml(meta.ogLocale) : undefined;
+  const ogImageType = meta.ogImageType ? escapeHtml(meta.ogImageType) : undefined;
 
   const twitterCard = meta.twitterCard || 'summary_large_image';
   const twitterTitleRaw = meta.twitterTitle ?? ogTitleRaw ?? meta.title;
@@ -324,6 +340,8 @@ function buildInjection(meta: NormalizedMeta, req: Request): string {
     ogImage && `<meta property="og:image" content="${ogImage}">`,
     ogImage && `<meta property="og:image:width" content="1200">`,
     ogImage && `<meta property="og:image:height" content="630">`,
+    ogImageType && `<meta property="og:image:type" content="${ogImageType}">`,
+    ogLocale && `<meta property="og:locale" content="${ogLocale}">`,
     twitterCard && `<meta name="twitter:card" content="${twitterCard}">`,
     twitterTitle && `<meta name="twitter:title" content="${twitterTitle}">`,
     twitterDescription && `<meta name="twitter:description" content="${twitterDescription}">`,

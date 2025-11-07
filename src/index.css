@@ -74,6 +74,21 @@
   .prose code {
     @apply bg-base-300 text-base-content;
   }
+
+  /* Inline code styling */
+  :not(pre) > code {
+    @apply bg-base-300 text-primary px-1.5 py-0.5 rounded text-sm font-mono;
+  }
+
+  /* Override highlight.js background to follow our theme */
+  .hljs {
+    background: transparent !important;
+  }
+
+  /* Adjust syntax colors for light mode */
+  [data-theme="mylight"] .hljs {
+    filter: brightness(0.85) saturate(1.2);
+  }
 }
 
 @layer components {

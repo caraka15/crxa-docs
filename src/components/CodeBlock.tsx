@@ -1,28 +1,50 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import hljs from 'highlight.js/lib/core';
+import bash from 'highlight.js/lib/languages/bash';
+import javascript from 'highlight.js/lib/languages/javascript';
+import typescript from 'highlight.js/lib/languages/typescript';
+import json from 'highlight.js/lib/languages/json';
+import yaml from 'highlight.js/lib/languages/yaml';
+import python from 'highlight.js/lib/languages/python';
+import go from 'highlight.js/lib/languages/go';
+import rust from 'highlight.js/lib/languages/rust';
+import 'highlight.js/styles/atom-one-dark.css';
+
+// Register languages
+hljs.registerLanguage('bash', bash);
+hljs.registerLanguage('sh', bash);
+hljs.registerLanguage('shell', bash);
+hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('js', javascript);
+hljs.registerLanguage('typescript', typescript);
+hljs.registerLanguage('ts', typescript);
+hljs.registerLanguage('json', json);
+hljs.registerLanguage('yaml', yaml);
+hljs.registerLanguage('yml', yaml);
+hljs.registerLanguage('python', python);
+hljs.registerLanguage('py', python);
+hljs.registerLanguage('go', go);
+hljs.registerLanguage('rust', rust);
 
 interface CodeBlockProps {
   children: string;
   className?: string;
+  language?: string;
 }
 
-const detectLanguage = (code: string): string => {
-  // Simple language detection based on common patterns
-  if (code.includes('curl ') || code.includes('wget ')) return 'bash';
-  if (code.includes('import ') && code.includes('from ')) return 'python';
-  if (code.includes('const ') || code.includes('function ') || code.includes('=>')) return 'javascript';
-  if (code.includes('<?php')) return 'php';
-  if (code.includes('#include') || code.includes('int main')) return 'c++';
-  if (code.includes('public class') || code.includes('System.out')) return 'java';
-  if (code.includes('def ') || code.includes('import ')) return 'python';
-  if (code.includes('SELECT') || code.includes('FROM')) return 'sql';
-  if (code.includes('{') && code.includes('}')) return 'json';
-  if (code.includes('<') && code.includes('>')) return 'html';
-  return 'text';
-};
-
-export const CodeBlock = ({ children, className }: CodeBlockProps) => {
+export const CodeBlock = ({ children, className, language }: CodeBlockProps) => {
   const [copied, setCopied] = useState(false);
-  const language = detectLanguage(children);
+  const codeRef = useRef<HTMLElement>(null);
+  const displayLanguage = language || 'bash';
+
+  useEffect(() => {
+    if (codeRef.current) {
+      // Remove any existing highlighting
+      codeRef.current.removeAttribute('data-highlighted');
+      // Apply syntax highlighting
+      hljs.highlightElement(codeRef.current);
+    }
+  }, [children, displayLanguage]);
 
   const handleCopy = async () => {
     try {
@@ -39,7 +61,7 @@ export const CodeBlock = ({ children, className }: CodeBlockProps) => {
       {/* Header with language and copy button */}
       <div className="flex items-center justify-between bg-base-200 px-4 py-2 rounded-t-lg border border-b-0">
         <span className="text-xs text-base-content/70 font-mono uppercase tracking-wide">
-          {language}
+          {displayLanguage}
         </span>
         <button
           onClick={handleCopy}
@@ -61,10 +83,15 @@ export const CodeBlock = ({ children, className }: CodeBlockProps) => {
         </button>
       </div>
       
-      {/* Code content */}
+      {/* Code content with syntax highlighting */}
       <div className="relative">
-        <pre className={`bg-base-300 text-base-content p-4 rounded-b-lg overflow-x-auto border border-t-0 ${className || ''}`}>
-          <code className="text-base-content text-sm font-mono leading-relaxed">{children}</code>
+        <pre className={`bg-base-300 m-0 rounded-b-lg overflow-x-auto border border-t-0 ${className || ''}`}>
+          <code 
+            ref={codeRef}
+            className={`hljs language-${displayLanguage} block p-4 text-sm font-mono leading-relaxed`}
+          >
+            {children}
+          </code>
         </pre>
       </div>
     </div>

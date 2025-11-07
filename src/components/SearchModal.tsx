@@ -8,8 +8,9 @@ interface SearchModalProps {
 
 interface SearchResult {
   id: string;
-  text: string;
-  level: number;
+  header: string;
+  preview: string;
+  type: 'heading' | 'content';
 }
 
 export const SearchModal = ({ isOpen, onClose, content }: SearchModalProps) => {
@@ -22,36 +23,89 @@ export const SearchModal = ({ isOpen, onClose, content }: SearchModalProps) => {
       return;
     }
 
-    // Extract headings and search through content
-    const headingRegex = /^(#{1,6})\s+(.+)$/gm;
+    const searchQuery = query.toLowerCase();
     const searchResults: SearchResult[] = [];
-    let match;
-
-    while ((match = headingRegex.exec(content)) !== null) {
-      const level = match[1].length;
-      const text = match[2].trim();
-      const id = text.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+    
+    // Split content into sections by headers
+    const lines = content.split('\n');
+    let currentHeader = '';
+    let currentHeaderId = '';
+    let sectionContent: string[] = [];
+    
+    const processSectionContent = () => {
+      if (sectionContent.length === 0) return;
       
-      if (text.toLowerCase().includes(query.toLowerCase())) {
-        searchResults.push({ id, text, level });
+      const fullContent = sectionContent.join('\n');
+      if (fullContent.toLowerCase().includes(searchQuery)) {
+        // Find the specific line(s) that match
+        const matchingLines = sectionContent.filter(line => 
+          line.toLowerCase().includes(searchQuery)
+        );
+        
+        if (matchingLines.length > 0) {
+          // Get context around the match
+          let preview = matchingLines[0];
+          const queryIndex = preview.toLowerCase().indexOf(searchQuery);
+          
+          // Get surrounding context
+          const start = Math.max(0, queryIndex - 50);
+          const end = Math.min(preview.length, queryIndex + searchQuery.length + 100);
+          
+          if (start > 0) preview = '...' + preview.substring(start, end);
+          else preview = preview.substring(start, end);
+          
+          if (end < matchingLines[0].length) preview += '...';
+          
+          // Clean up markdown syntax for preview
+          preview = preview.replace(/(\*\*|__|\*|_|`|~)/g, '');
+          
+          searchResults.push({
+            id: currentHeaderId,
+            header: currentHeader || 'Introduction',
+            preview: preview.trim(),
+            type: 'content'
+          });
+        }
+      }
+    };
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const headingMatch = line.match(/^(#{1,6})\s+(.+)$/);
+      
+      if (headingMatch) {
+        // Process previous section
+        processSectionContent();
+        
+        // Start new section
+        const headerText = headingMatch[2].trim();
+        currentHeader = headerText;
+        currentHeaderId = headerText.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+        sectionContent = [];
+        
+        // Check if header itself matches
+        if (headerText.toLowerCase().includes(searchQuery)) {
+          searchResults.push({
+            id: currentHeaderId,
+            header: headerText,
+            preview: headerText,
+            type: 'heading'
+          });
+        }
+      } else {
+        sectionContent.push(line);
       }
     }
+    
+    // Process last section
+    processSectionContent();
 
-    // Also search in content paragraphs
-    const lines = content.split('\n');
-    lines.forEach((line, index) => {
-      if (line.toLowerCase().includes(query.toLowerCase()) && !line.startsWith('#')) {
-        const preview = line.substring(0, 100) + (line.length > 100 ? '...' : '');
-        const strippedPreview = preview.replace(/(\*\*|__|\*|_|`|~|#)/g, '');
-        searchResults.push({
-          id: `line-${index + 1}`,
-          text: strippedPreview,
-          level: 0
-        });
-      }
-    });
+    // Remove duplicates based on id and preview
+    const uniqueResults = searchResults.filter((result, index, self) =>
+      index === self.findIndex(r => r.id === result.id && r.preview === result.preview)
+    );
 
-    setResults(searchResults.slice(0, 10));
+    setResults(uniqueResults.slice(0, 15));
   }, [query, content]);
 
   const scrollToResult = (id: string) => {
@@ -98,20 +152,29 @@ export const SearchModal = ({ isOpen, onClose, content }: SearchModalProps) => {
           </div>
           
           {results.length > 0 && (
-            <div className="max-h-96 overflow-y-auto">
+            <div className="max-h-96 overflow-y-auto space-y-1">
               {results.map((result, index) => (
                 <div
                   key={`${result.id}-${index}`}
                   onClick={() => scrollToResult(result.id)}
-                  className="p-3 hover:bg-base-200 cursor-pointer rounded-lg border-b border-base-300 last:border-b-0"
+                  className="p-3 hover:bg-base-200 cursor-pointer rounded-lg transition-colors"
                 >
-                  <div className="flex items-center gap-2">
-                    {result.level > 0 && (
-                      <span className="text-xs text-primary font-mono">
-                        {'#'.repeat(result.level)}
-                      </span>
-                    )}
-                    <span className="text-sm">{result.text}</span>
+                  <div className="flex items-start gap-2">
+                    <svg className="w-4 h-4 mt-0.5 flex-shrink-0 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      {result.type === 'heading' ? (
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                      ) : (
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      )}
+                    </svg>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs text-primary font-medium mb-1">
+                        {result.header}
+                      </div>
+                      <div className="text-sm text-base-content/80 line-clamp-2">
+                        {result.preview}
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}

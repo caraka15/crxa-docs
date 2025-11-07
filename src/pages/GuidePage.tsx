@@ -302,8 +302,10 @@ export const GuidePage = () => {
                     pre: ({ children, ...props }) => {
                       const codeElement = children as any;
                       const codeText = codeElement?.props?.children || '';
+                      const language = codeElement?.props?.className?.replace('language-', '') || 'text';
+                      
                       if (typeof codeText === 'string') {
-                        return <CodeBlock>{codeText}</CodeBlock>;
+                        return <CodeBlock language={language}>{codeText}</CodeBlock>;
                       }
                       return (
                         <pre className="bg-base-300 text-base-content p-4 rounded-lg overflow-x-auto border" {...props}>
@@ -314,11 +316,11 @@ export const GuidePage = () => {
                     code: ({ children, className }) => {
                       const isInline = !className;
                       return isInline ? (
-                        <code className="bg-base-300 text-base-content px-2 py-1 rounded text-sm">
+                        <code className="bg-base-300 text-primary px-2 py-1 rounded text-sm font-mono">
                           {children}
                         </code>
                       ) : (
-                        <code className="text-base-content">{children}</code>
+                        <code className={className}>{children}</code>
                       );
                     },
                     // Custom styling for headings with IDs
