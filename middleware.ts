@@ -37,6 +37,8 @@ const DEFAULT_OG_IMAGE =
   '/api/og?title=Crxanode%20Docs&subtitle=Validator%20infrastructure%20%26%20guides%20for%20Cosmos%20SDK%20chains.';
 const DEFAULT_OG_LOCALE = 'en_US';
 const DEFAULT_OG_IMAGE_TYPE = 'image/png';
+const STATIC_META_START = '<!--__STATIC_META_START__-->';
+const STATIC_META_END = '<!--__STATIC_META_END__-->';
 const CHAIN_NAME_OVERRIDES: Record<string, string> = {
   safrochain: 'SAFROCHAIN',
   paxi: 'PAXI',
@@ -365,6 +367,14 @@ function buildInjection(meta: NormalizedMeta, req: Request): string {
   return `\n<!-- OG INJECT START -->\n${allTags}\n<!-- OG INJECT END -->\n`;
 }
 
+function stripStaticMetaBlock(html: string): string {
+  const start = html.indexOf(STATIC_META_START);
+  if (start === -1) return html;
+  const end = html.indexOf(STATIC_META_END, start + STATIC_META_START.length);
+  if (end === -1) return html;
+  return html.slice(0, start) + html.slice(end + STATIC_META_END.length);
+}
+
 export default async function middleware(req: Request) {
   const url = new URL(req.url);
   const pathname = url.pathname;
@@ -386,8 +396,10 @@ export default async function middleware(req: Request) {
 
   const html = await res.text();
 
+  const cleanedHtml = stripStaticMetaBlock(html);
+
   const injection = buildInjection(meta, req);
-  let transformed = html;
+  let transformed = cleanedHtml;
   const placeholder = '<!--__OG_META_INJECTION__-->';
   if (html.includes(placeholder)) {
     transformed = html.replace(placeholder, `${placeholder}${injection}`);
