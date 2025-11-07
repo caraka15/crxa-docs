@@ -19,6 +19,7 @@ type NormalizedMeta = {
   ogTitle?: string;
   ogDescription?: string;
   ogImage?: string;
+  ogImageAlt?: string;
   ogType?: string;
   ogLocale?: string;
   ogImageType?: string;
@@ -26,6 +27,7 @@ type NormalizedMeta = {
   twitterTitle?: string;
   twitterDescription?: string;
   twitterImage?: string;
+  twitterImageAlt?: string;
   structuredData?: Array<Record<string, unknown>>;
 };
 
@@ -35,6 +37,7 @@ const DEFAULT_DESCRIPTION =
   'Comprehensive documentation for Crxanode validator services: API endpoints, node setup guides, snapshots, and infrastructure best practices for Cosmos SDK chains.';
 const DEFAULT_OG_IMAGE =
   '/api/og?title=Crxanode%20Docs&subtitle=Validator%20infrastructure%20%26%20guides%20for%20Cosmos%20SDK%20chains.';
+const DEFAULT_OG_IMAGE_ALT = 'Crxanode Validator Documentation Preview';
 const DEFAULT_OG_LOCALE = 'en_US';
 const DEFAULT_OG_IMAGE_TYPE = 'image/png';
 const STATIC_META_START = '<!--__STATIC_META_START__-->';
@@ -107,6 +110,7 @@ const getHomeMeta = (): NormalizedMeta => {
     ogTitle,
     ogDescription: description,
     ogImage,
+    ogImageAlt: DEFAULT_OG_IMAGE_ALT,
     ogType: 'website',
     ogLocale: DEFAULT_OG_LOCALE,
     ogImageType: DEFAULT_OG_IMAGE_TYPE,
@@ -114,6 +118,7 @@ const getHomeMeta = (): NormalizedMeta => {
     twitterTitle: ogTitle,
     twitterDescription: description,
     twitterImage: ogImage,
+    twitterImageAlt: DEFAULT_OG_IMAGE_ALT,
     keywords: HOME_KEYWORDS,
     structuredData,
   };
@@ -123,6 +128,7 @@ const getLicenseMeta = (): NormalizedMeta => {
   const rawTitle = 'Service License';
   const title = withSiteName(rawTitle);
   const description = 'CRXANODE service and documentation license terms.';
+  const imageAlt = 'Crxanode service license preview';
 
   return {
     title,
@@ -132,6 +138,7 @@ const getLicenseMeta = (): NormalizedMeta => {
     ogTitle: title,
     ogDescription: description,
     ogImage: DEFAULT_OG_IMAGE,
+    ogImageAlt: imageAlt,
     ogType: 'website',
     ogLocale: DEFAULT_OG_LOCALE,
     ogImageType: DEFAULT_OG_IMAGE_TYPE,
@@ -139,6 +146,7 @@ const getLicenseMeta = (): NormalizedMeta => {
     twitterTitle: title,
     twitterDescription: description,
     twitterImage: DEFAULT_OG_IMAGE,
+    twitterImageAlt: imageAlt,
     robots: 'noindex, nofollow',
   };
 };
@@ -157,6 +165,9 @@ const buildServiceMeta = (slug: string): NormalizedMeta => {
     ? 'RPC, API, gRPC, peers, and snapshots by Crxanode'
     : 'Crxanode infrastructure endpoints for Cosmos SDK chains';
   const ogImage = createOgImagePath(ogTitle, ogSubtitle, { chainSlug: slug, badge: 'SERVICE' });
+  const imageAlt = chainDisplay
+    ? `${chainDisplay} service endpoints preview by Crxanode`
+    : 'Crxanode validator service endpoints preview';
 
   return {
     title,
@@ -168,11 +179,13 @@ const buildServiceMeta = (slug: string): NormalizedMeta => {
     ogImageType: DEFAULT_OG_IMAGE_TYPE,
     ogDescription: description,
     ogImage,
+    ogImageAlt: imageAlt,
     ogType: 'website',
     twitterCard: 'summary_large_image',
     twitterTitle: ogTitle,
     twitterDescription: description,
     twitterImage: ogImage,
+    twitterImageAlt: imageAlt,
   };
 };
 
@@ -188,6 +201,9 @@ const buildGuideMeta = (slug: string): NormalizedMeta => {
     ? 'Step-by-step validator operations with Crxanode'
     : 'Infrastructure documentation by Crxanode';
   const ogImage = createOgImagePath(ogTitle, ogSubtitle, { chainSlug: slug, badge: 'GUIDE' });
+  const imageAlt = chainDisplay
+    ? `${chainDisplay} validator guide preview by Crxanode`
+    : 'Crxanode validator guide preview';
 
   return {
     title,
@@ -199,11 +215,13 @@ const buildGuideMeta = (slug: string): NormalizedMeta => {
     ogImageType: DEFAULT_OG_IMAGE_TYPE,
     ogDescription: description,
     ogImage,
+    ogImageAlt: imageAlt,
     ogType: 'website',
     twitterCard: 'summary_large_image',
     twitterTitle: ogTitle,
     twitterDescription: description,
     twitterImage: ogImage,
+    twitterImageAlt: imageAlt,
   };
 };
 
@@ -218,6 +236,7 @@ const getFallbackMeta = (pathname: string): NormalizedMeta => {
     ogTitle: title,
     ogDescription: DEFAULT_DESCRIPTION,
     ogImage: DEFAULT_OG_IMAGE,
+     ogImageAlt: DEFAULT_OG_IMAGE_ALT,
     ogType: 'website',
     ogLocale: DEFAULT_OG_LOCALE,
     ogImageType: DEFAULT_OG_IMAGE_TYPE,
@@ -225,6 +244,7 @@ const getFallbackMeta = (pathname: string): NormalizedMeta => {
     twitterTitle: title,
     twitterDescription: DEFAULT_DESCRIPTION,
     twitterImage: DEFAULT_OG_IMAGE,
+    twitterImageAlt: DEFAULT_OG_IMAGE_ALT,
   };
 };
 
@@ -284,7 +304,13 @@ function buildInjection(meta: NormalizedMeta, req: Request): string {
   };
   const absolutize = (value: unknown): unknown => {
     if (typeof value === 'string') {
-      return abs(value) ?? value;
+      if (value.startsWith('/')) {
+        return abs(value) ?? value;
+      }
+      if (/^https?:\/\//i.test(value)) {
+        return value;
+      }
+      return value;
     }
     if (Array.isArray(value)) {
       return value.map((item) => absolutize(item));
@@ -315,6 +341,7 @@ function buildInjection(meta: NormalizedMeta, req: Request): string {
   const ogDescription = ogDescriptionRaw ? escapeHtml(ogDescriptionRaw) : undefined;
   const ogType = ogTypeRaw ? escapeHtml(ogTypeRaw) : undefined;
   const ogImage = ogImageAbs ? escapeHtml(ogImageAbs) : undefined;
+  const ogImageAlt = meta.ogImageAlt ? escapeHtml(meta.ogImageAlt) : undefined;
   const ogLocale = meta.ogLocale ? escapeHtml(meta.ogLocale) : undefined;
   const ogImageType = meta.ogImageType ? escapeHtml(meta.ogImageType) : undefined;
 
@@ -325,6 +352,8 @@ function buildInjection(meta: NormalizedMeta, req: Request): string {
   const twitterTitle = twitterTitleRaw ? escapeHtml(twitterTitleRaw) : undefined;
   const twitterDescription = twitterDescriptionRaw ? escapeHtml(twitterDescriptionRaw) : undefined;
   const twitterImage = twitterImageAbs ? escapeHtml(twitterImageAbs) : undefined;
+  const twitterImageAltRaw = meta.twitterImageAlt ?? meta.ogImageAlt;
+  const twitterImageAlt = twitterImageAltRaw ? escapeHtml(twitterImageAltRaw) : undefined;
 
   const keywordsValue =
     meta.keywords && meta.keywords.length > 0 ? escapeHtml(meta.keywords.join(', ')) : undefined;
@@ -342,12 +371,14 @@ function buildInjection(meta: NormalizedMeta, req: Request): string {
     ogImage && `<meta property="og:image" content="${ogImage}">`,
     ogImage && `<meta property="og:image:width" content="1200">`,
     ogImage && `<meta property="og:image:height" content="630">`,
+    ogImageAlt && `<meta property="og:image:alt" content="${ogImageAlt}">`,
     ogImageType && `<meta property="og:image:type" content="${ogImageType}">`,
     ogLocale && `<meta property="og:locale" content="${ogLocale}">`,
     twitterCard && `<meta name="twitter:card" content="${twitterCard}">`,
     twitterTitle && `<meta name="twitter:title" content="${twitterTitle}">`,
     twitterDescription && `<meta name="twitter:description" content="${twitterDescription}">`,
     twitterImage && `<meta name="twitter:image" content="${twitterImage}">`,
+    twitterImageAlt && `<meta name="twitter:image:alt" content="${twitterImageAlt}">`,
     canonicalEscaped && `<meta name="twitter:url" content="${canonicalEscaped}">`,
     keywordsValue && `<meta name="keywords" content="${keywordsValue}">`,
     robots && `<meta name="robots" content="${robots}">`,
