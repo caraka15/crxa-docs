@@ -401,10 +401,10 @@ export default async function middleware(req: Request) {
   const injection = buildInjection(meta, req);
   let transformed = cleanedHtml;
   const placeholder = '<!--__OG_META_INJECTION__-->';
-  if (html.includes(placeholder)) {
-    transformed = html.replace(placeholder, `${placeholder}${injection}`);
+  if (cleanedHtml.includes(placeholder)) {
+    transformed = cleanedHtml.replace(placeholder, `${placeholder}${injection}`);
   } else {
-    transformed = html.replace('</head>', `${injection}</head>`);
+    transformed = cleanedHtml.replace('</head>', `${injection}</head>`);
   }
 
   const headers = new Headers(res.headers);
