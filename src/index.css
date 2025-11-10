@@ -83,6 +83,7 @@
   /* Override highlight.js background to follow our theme */
   .hljs {
     background: transparent !important;
+    padding: 0.5rem 1rem !important;
   }
 
   /* Adjust syntax colors for light mode */

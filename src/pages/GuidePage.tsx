@@ -7,7 +7,7 @@ import { Logo } from '../components/Logo';
 import { GuideSidebar } from '../components/GuideSidebar';
 import { CodeBlock } from '../components/CodeBlock';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SearchModal } from '@/components/SearchModal';
 import { Seo } from '@/components/Seo';
 import { buildCanonicalUrl, SITE_URL } from '@/config/site';
@@ -108,6 +108,19 @@ export const GuidePage = () => {
   const chain = chainSlug ? getChain(chainSlug) : undefined;
   const guideSlug = chain?.hasGuide ? chain.slug : null;
   const { guide, loading: guideLoading, error: guideError } = useChainGuide(guideSlug);
+
+  // Handle Ctrl+F keyboard shortcut
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const chainDisplayName =
     chain?.service?.chainName?.trim() ||

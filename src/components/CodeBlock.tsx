@@ -88,7 +88,7 @@ export const CodeBlock = ({ children, className, language }: CodeBlockProps) => 
         <pre className={`bg-base-300 m-0 rounded-b-lg overflow-x-auto border border-t-0 ${className || ''}`}>
           <code 
             ref={codeRef}
-            className={`hljs language-${displayLanguage} block p-4 text-sm font-mono leading-relaxed`}
+            className={`hljs language-${displayLanguage} block px-8 py-6 text-sm font-mono leading-relaxed`}
           >
             {children}
           </code>
