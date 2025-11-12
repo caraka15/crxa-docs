@@ -2,13 +2,15 @@ import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useChains } from '@/hooks/useChains';
 import { useAggregateStats } from '@/hooks/useAggregateStats';
+import { useServerLocations } from '@/hooks/useServerLocations';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { StatusIndicator } from '@/components/StatusIndicator';
+import { WorldMap } from '@/components/WorldMap';
 import { ChainService, ValidatorStats, Chain } from '@/types/chain';
 import validatorData from '@/data/validator-data.json';
-import { Shield, TrendingUp, Users, DollarSign, ExternalLink, Zap, Lock, HeartHandshake, Sparkles, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Shield, TrendingUp, Users, DollarSign, ExternalLink, Zap, Lock, HeartHandshake, Sparkles, ArrowRight, CheckCircle2, Globe } from 'lucide-react';
 
 const LOGO_BASE_URL = 'https://explorer.crxanode.me/logos/';
 const EXTENSIONS = ['png', 'svg', 'jpg'];
@@ -177,6 +179,7 @@ const NetworkCard: React.FC<{ chain: Chain, stats: ValidatorStats | undefined }>
 export const ValidatorHomepage = () => {
   const { chains, loading: chainsLoading } = useChains();
   const { stats: allValidatorStats, loading: statsLoading } = useAggregateStats(chains);
+  const { locations, loading: locationsLoading } = useServerLocations();
 
   const aggregateStats = useMemo(() => {
     if (statsLoading || allValidatorStats.length === 0) {
@@ -297,6 +300,60 @@ export const ValidatorHomepage = () => {
                 </a>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Global Server Infrastructure Section */}
+        <section className="py-24 relative overflow-hidden">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
+          
+          <div className="container mx-auto px-4 relative z-10">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 mb-4 animate-fade-in">
+                <Globe className="w-4 h-4 text-primary animate-pulse" />
+                <span className="text-sm font-medium text-primary">Global Infrastructure</span>
+              </div>
+              <h2 className="text-5xl font-bold text-base-content mb-6">
+                Worldwide <span className="text-primary">Server Distribution</span>
+              </h2>
+              <p className="text-xl text-base-content/70 max-w-2xl mx-auto">
+                Our validator nodes are distributed across multiple locations globally, ensuring high availability, low latency, and robust network performance
+              </p>
+            </div>
+
+            <div className="max-w-7xl mx-auto">
+              <WorldMap locations={locations} loading={locationsLoading} />
+            </div>
+
+            {/* Infrastructure Stats */}
+            {!locationsLoading && locations.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 max-w-4xl mx-auto">
+                <div className="card bg-base-200/70 border border-base-300 hover:border-primary/50 transition-all duration-300">
+                  <div className="card-body p-6 text-center">
+                    <div className="text-3xl font-bold text-primary">{locations.length}</div>
+                    <div className="text-sm text-base-content/60">Server Locations</div>
+                  </div>
+                </div>
+                <div className="card bg-base-200/70 border border-base-300 hover:border-primary/50 transition-all duration-300">
+                  <div className="card-body p-6 text-center">
+                    <div className="text-3xl font-bold text-primary">99.9%</div>
+                    <div className="text-sm text-base-content/60">Uptime SLA</div>
+                  </div>
+                </div>
+                <div className="card bg-base-200/70 border border-base-300 hover:border-primary/50 transition-all duration-300">
+                  <div className="card-body p-6 text-center">
+                    <div className="text-3xl font-bold text-primary">24/7</div>
+                    <div className="text-sm text-base-content/60">Monitoring</div>
+                  </div>
+                </div>
+                <div className="card bg-base-200/70 border border-base-300 hover:border-primary/50 transition-all duration-300">
+                  <div className="card-body p-6 text-center">
+                    <div className="text-3xl font-bold text-primary">&lt;100ms</div>
+                    <div className="text-sm text-base-content/60">Avg Response</div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </section>
 
