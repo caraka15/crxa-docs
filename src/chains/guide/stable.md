@@ -88,54 +88,25 @@ sed -i "s/^moniker = \".*\"/moniker = \"$MONIKER\"/" ~/.stabled/config/config.to
 ```
 
 ### Step 5: Essential app.toml & config.toml Updates
-The dev team requires JSON-RPC, P2P, and RPC sections to use the following defaults. The helper scripts below rewrite those blocks while also respecting your custom port prefix.
+The dev team requires JSON-RPC, P2P, and RPC sections to use the following defaults. The lightweight `sed` helpers below rewrite those blocks while also respecting your custom port prefix.
 
 ```bash
 # app.toml JSON-RPC block (EVM compatibility)
-python3 <<'PY'
-import os, re, pathlib
-home = pathlib.Path.home()
-app_path = home / ".stabled" / "config" / "app.toml"
-port = os.getenv("STABLE_PORT", "27")
-json_rpc = f"""[json-rpc]
-enable = true
-address = "0.0.0.0:{port}545"
-ws-address = "0.0.0.0:{port}546"
-allow-unprotected-txs = true
-"""
-text = app_path.read_text()
-pattern = r"(?ms)^\[json-rpc\][\s\S]*?(?=^\[|$)"
-if re.search(pattern, text):
-    text = re.sub(pattern, json_rpc + "\n", text, count=1)
-else:
-    text = text.rstrip() + "\n\n" + json_rpc + "\n"
-app_path.write_text(text)
-PY
+PORT="${STABLE_PORT:-27}"
+APP_TOML="$HOME/.stabled/config/app.toml"
+
+sed -i.bak -E "/^\[json-rpc\]/,/^\[/{s|^[[:space:]]*enable *=.*|enable = true|; s|^[[:space:]]*address *=.*|address = \"0.0.0.0:${PORT}545\"|; s|^[[:space:]]*ws-address *=.*|ws-address = \"0.0.0.0:${PORT}546\"|; s|^[[:space:]]*allow-unprotected-txs *=.*|allow-unprotected-txs = true|;}" "$APP_TOML"
 ```
 
 ```bash
 # config.toml P2P and RPC blocks
-python3 <<'PY'
-import os, re, pathlib
-home = pathlib.Path.home()
-cfg_path = home / ".stabled" / "config" / "config.toml"
-port = os.getenv("STABLE_PORT", "27")
-p2p_block = """[p2p]
-max_num_inbound_peers = 50
-max_num_outbound_peers = 30
-persistent_peers = "5ed0f977a26ccf290e184e364fb04e268ef16430@37.187.147.27:26656,128accd3e8ee379bfdf54560c21345451c7048c7@37.187.147.22:26656"
-pex = true
-"""
-rpc_block = f"""[rpc]
-laddr = "tcp://0.0.0.0:{port}657"
-max_open_connections = 900
-cors_allowed_origins = ["*"]  # Restrict for production as needed
-"""
-text = cfg_path.read_text()
-text = re.sub(r"(?ms)^\[p2p\][\s\S]*?(?=^\[)", p2p_block + "\n", text, count=1)
-text = re.sub(r"(?ms)^\[rpc\][\s\S]*?(?=^\[)", rpc_block + "\n", text, count=1)
-cfg_path.write_text(text)
-PY
+PORT="${STABLE_PORT:-27}"
+CFG_TOML="$HOME/.stabled/config/config.toml"
+PERSISTENT_PEERS="86dab3dc399c33ff9770fd089f51125d004a2fe3@130.185.118.7:26656,68a099f9fcf3a3fcff6e549105d206125b51d973@62.169.31.251:26656,b681477a33ae49fe1976f08a526fcf471a5325d4@173.212.235.213:26656,018819b22bf2d3556ebe5f4b18c80dab7ba990d1@213.199.45.97:26656,2a3b7812e5081d004560539d47da87a367bb5ced@77.237.236.171:26656,d756d8d108edf34eaaac0093f27dd2d10a35230d@213.199.63.145:26656,d00c7813e25b9a75d646c39a2eae2dcfe6ff910c@109.205.181.161:26656,76f5a8c98e621b9ac76dd5230ffb400cfef50bcd@184.174.33.181:26656,e8dc4eb1aed53078d90209c7d8d19d10e79e40bb@62.84.184.22:26656,9d7f64d958eaa286496347b97653235b82762d8e@149.102.140.7:26656,babe0a3c95868b13cafe31d3473ab646268b7ceb@217.76.62.42:26656,ff4ff638cee05df63d4a1a2d3721a31a70d0debc@141.94.138.48:26664,e33988e27710ee1a7072f757b61c3b28c922eb59@185.232.68.94:11656"
+
+sed -i.bak -E "/^\[p2p\]/,/^\[/{s|^[[:space:]]*max_num_inbound_peers *=.*|max_num_inbound_peers = 50|; s|^[[:space:]]*max_num_outbound_peers *=.*|max_num_outbound_peers = 30|; s|^[[:space:]]*persistent_peers *=.*|persistent_peers = \"${PERSISTENT_PEERS}\"|; s|^[[:space:]]*pex *=.*|pex = true|;}" "$CFG_TOML"
+
+sed -i -E "/^\[rpc\]/,/^\[/{s|^[[:space:]]*laddr *=.*|laddr = \"tcp://0.0.0.0:${PORT}657\"|; s|^[[:space:]]*max_open_connections *=.*|max_open_connections = 900|; s|^[[:space:]]*cors_allowed_origins *=.*|cors_allowed_origins = [\"*\"]  # Restrict for production as needed|;}" "$CFG_TOML"
 ```
 
 ### Step 6: Custom Port Rewrite (Same Logic as Safro)
