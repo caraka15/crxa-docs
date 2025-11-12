@@ -1,6 +1,7 @@
+import { useMemo } from 'react';
 import { CopyButton } from '../components/CopyButton';
 import { BlockHeight } from '../components/BlockHeight';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useChains } from '../hooks/useChains';
 import { EndpointCard } from '../components/EndpointCard';
 import { SnapshotTable } from '../components/SnapshotTable';
@@ -9,6 +10,7 @@ import { PingBadge } from '../components/PingBadge';
 import { Badge } from '../components/ui/badge';
 import { Seo } from '@/components/Seo';
 import { buildCanonicalUrl, SITE_URL } from '@/config/site';
+import { ChainBreadcrumbDropdown } from '@/components/ChainBreadcrumbDropdown';
 
 const formatChainName = (slug: string) => slug
   .split(/[-_]/)
@@ -109,8 +111,19 @@ const ServiceSkeleton = () => (
 
 export const ServicePage = () => {
   const { chain: chainSlug } = useParams<{ chain: string }>();
-  const { getChain, loading } = useChains();
+  const { chains, getChain, loading } = useChains();
+  const navigate = useNavigate();
   const chain = chainSlug ? getChain(chainSlug) : undefined;
+  const serviceChainOptions = useMemo(
+    () =>
+      chains
+        .filter((chainItem) => Boolean(chainItem.service))
+        .map((chainItem) => ({
+          slug: chainItem.slug,
+          label: chainItem.service?.chainName?.trim() || formatChainName(chainItem.slug)
+        })),
+    [chains]
+  );
 
   const chainDisplayName =
     chain?.service?.chainName?.trim() ||
@@ -188,6 +201,12 @@ export const ServicePage = () => {
   }
 
   const service = chain.service;
+  const handleChainSelect = (slug: string) => {
+    if (!slug || slug === chain.slug) {
+      return;
+    }
+    navigate(`/${slug}/service`);
+  };
 
   return (
     <>
@@ -208,9 +227,22 @@ export const ServicePage = () => {
           {/* Breadcrumb */}
           <div className="breadcrumbs text-sm mb-6">
             <ul>
-              <li><Link to="/" className="text-primary hover:text-secondary">Home</Link></li>
-              <li>{service.chainName}</li>
-              <li>Service</li>
+              <li>
+                <Link to="/" className="text-primary hover:text-secondary font-medium">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <ChainBreadcrumbDropdown
+                  currentLabel={service.chainName}
+                  currentSlug={chain.slug}
+                  items={serviceChainOptions}
+                  onSelect={handleChainSelect}
+                />
+              </li>
+              <li>
+                <span className="text-base-content font-medium">Service</span>
+              </li>
             </ul>
           </div>
 

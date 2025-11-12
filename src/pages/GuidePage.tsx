@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useChains } from '../hooks/useChains';
@@ -7,10 +7,11 @@ import { Logo } from '../components/Logo';
 import { GuideSidebar } from '../components/GuideSidebar';
 import { CodeBlock } from '../components/CodeBlock';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { SearchModal } from '@/components/SearchModal';
 import { Seo } from '@/components/Seo';
 import { buildCanonicalUrl, SITE_URL } from '@/config/site';
+import { ChainBreadcrumbDropdown } from '@/components/ChainBreadcrumbDropdown';
 
 const formatChainName = (slug: string) => slug
   .split(/[-_]/)
@@ -100,14 +101,26 @@ const GuideSkeleton = () => (
 
 export const GuidePage = () => {
   const { chain: chainSlug } = useParams<{ chain: string }>();
-  const { getChain, loading } = useChains();
+  const { chains, getChain, loading } = useChains();
   const isMobile = useIsMobile();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const navigate = useNavigate();
 
   const chain = chainSlug ? getChain(chainSlug) : undefined;
   const guideSlug = chain?.hasGuide ? chain.slug : null;
   const { guide, loading: guideLoading, error: guideError } = useChainGuide(guideSlug);
+
+  const guideChainOptions = useMemo(
+    () =>
+      chains
+        .filter((chainItem) => chainItem.hasGuide)
+        .map((chainItem) => ({
+          slug: chainItem.slug,
+          label: chainItem.service?.chainName?.trim() || formatChainName(chainItem.slug)
+        })),
+    [chains]
+  );
 
   // Handle Ctrl+F keyboard shortcut
   useEffect(() => {
@@ -235,6 +248,12 @@ export const GuidePage = () => {
   }
 
   const chainName = fallbackDisplayName ?? 'Unknown';
+  const handleChainSelect = (slug: string) => {
+    if (!slug || slug === chain.slug) {
+      return;
+    }
+    navigate(`/${slug}/guide`);
+  };
 
   return (
     <>
@@ -267,9 +286,22 @@ export const GuidePage = () => {
                 )}
                 <div className="breadcrumbs text-sm">
                   <ul>
-                    <li><Link to="/" className="text-primary hover:text-secondary">Home</Link></li>
-                    <li>{chainName}</li>
-                    <li>Guide</li>
+                    <li>
+                      <Link to="/" className="text-primary hover:text-secondary font-medium">
+                        Home
+                      </Link>
+                    </li>
+                    <li>
+                      <ChainBreadcrumbDropdown
+                        currentLabel={chainName}
+                        currentSlug={chain.slug}
+                        items={guideChainOptions}
+                        onSelect={handleChainSelect}
+                      />
+                    </li>
+                    <li>
+                      <span className="text-base-content font-medium">Guide</span>
+                    </li>
                   </ul>
                 </div>
               </div>
