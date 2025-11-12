@@ -1,0 +1,15 @@
+{
+    "chainName": "STABLE",
+    "api": "https://stable-api.crxanode.me",
+    "rpc": "https://stable-rpc.crxanode.me",
+    "grpc": "stable-grpc.crxanode.me:443",
+    "peer": "f7bf3a360984c8683d089728f3bcd81bb4bfd9a1@stable-rpc.crxanode.me:26656",
+    "addrbook": "https://cdn.crxanode.me/stable/addrbook.json",
+    "genesis": "https://cdn.crxanode.me/stable/genesis.json",
+    "valoper": "stablevaloper1mknfsjnajxkkrqp9j5mk3w6l5dmc4wyzv98d5y",
+    "valcons": "stablevalcons1zt2y740m9fv6fgzwyt4uccdhs7cszxkr2lar59",
+    "dir": "~/.stabled",
+    "type": "testnet",
+    "denom": "astable",
+    "decimals": 18
+}
