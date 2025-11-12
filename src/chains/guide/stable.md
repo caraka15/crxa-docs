@@ -88,7 +88,7 @@ sed -i "s/^moniker = \".*\"/moniker = \"$MONIKER\"/" ~/.stabled/config/config.to
 ```
 
 ### Step 5: Essential app.toml & config.toml Updates
-The dev team requires JSON-RPC, P2P, and RPC sections to use the following defaults. The lightweight `sed` helpers below rewrite those blocks while also respecting your custom port prefix.
+The dev team requires JSON-RPC, P2P, and RPC sections to use the following defaults. The bash helper scripts below rewrite those blocks while also respecting your custom port prefix.
 
 ```bash
 # app.toml JSON-RPC block (EVM compatibility)
@@ -165,7 +165,27 @@ sudo systemctl start stabled
 sudo systemctl status stabled
 sudo journalctl -u stabled -f
 ```
+## Snapshot Restore (Crxa CDN)
+Use the same snapshot workflow as the safro guide, but point it to the Stable assets hosted on the Crxa CDN.
 
+```bash
+sudo apt install lz4 -y
+sudo systemctl stop stabled
+
+cp $HOME/.stabled/data/priv_validator_state.json \
+   $HOME/.stabled/priv_validator_state.json.backup
+
+stabled tendermint unsafe-reset-all --home $HOME/.stabled --keep-addr-book
+
+curl -L https://cdn.crxanode.me/stable/stable-testnet-latest.tar.lz4 \
+  | lz4 -dc - | tar -xf - -C $HOME/.stabled
+
+mv $HOME/.stabled/priv_validator_state.json.backup \
+   $HOME/.stabled/data/priv_validator_state.json
+
+sudo systemctl restart stabled
+sudo journalctl -u stabled -fo cat
+```
 ---
 
 ## Cosmovisor Setup (Recommended for Automatic Upgrades)
@@ -252,26 +272,6 @@ sudo journalctl -u ${SERVICE_NAME} -f
 
 ---
 
-## Snapshot Restore (Crxa CDN)
-Use the same snapshot workflow as the safro guide, but point it to the Stable assets hosted on the Crxa CDN.
 
-```bash
-sudo apt install lz4 -y
-sudo systemctl stop stabled
-
-cp $HOME/.stabled/data/priv_validator_state.json \
-   $HOME/.stabled/priv_validator_state.json.backup
-
-stabled tendermint unsafe-reset-all --home $HOME/.stabled --keep-addr-book
-
-curl -L https://cdn.crxanode.me/stable/stable-testnet-latest.tar.lz4 \
-  | lz4 -dc - | tar -xf - -C $HOME/.stabled
-
-mv $HOME/.stabled/priv_validator_state.json.backup \
-   $HOME/.stabled/data/priv_validator_state.json
-
-sudo systemctl restart stabled
-sudo journalctl -u stabled -fo cat
-```
 
 Stay on top of future announcements from the Stable team for updated chain IDs, binaries, peers, and snapshot names.
