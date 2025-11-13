@@ -4,20 +4,17 @@ import path from 'node:path';
 // Config
 const ROOT_DIR = process.cwd();
 const SRC_DIR = path.join(ROOT_DIR, 'src');
+const CHAINS_SERVICE_DIR = path.join(SRC_DIR, 'chains', 'service');
+const CHAINS_GUIDE_DIR = path.join(SRC_DIR, 'chains', 'guide');
 const PUBLIC_DIR = path.join(ROOT_DIR, 'public');
 const OUTPUT_FILE = path.join(PUBLIC_DIR, 'sitemap.xml');
 const ROBOTS_FILE = path.join(PUBLIC_DIR, 'robots.txt');
 
 // Base URL for absolute links in sitemap. Set via env for production deploys.
 const SITE_BASE_URL = (process.env.SITE_BASE_URL || 'https://docs.crxanode.me').replace(/\/$/, '');
-const CHAINS_CDN_BASE = (process.env.CHAINS_CDN_BASE || 'https://cdn.crxanode.me/chains').replace(/\/$/, '');
 const PING_SITEMAP = /^1|true$/i.test(String(process.env.PING_SITEMAP || ''));
 
 const fetchFn = globalThis.fetch;
-
-if (!fetchFn) {
-  throw new Error('Global fetch API is not available in this Node environment. Please run with Node 18+.');
-}
 
 function formatDate(date = new Date()) {
   // YYYY-MM-DD
@@ -36,28 +33,18 @@ function url(loc, { lastmod, changefreq, priority } = {}) {
   return parts.join('\n');
 }
 
-async function fetchSlugsFromCdn(subPath, extension) {
-  const url = `${CHAINS_CDN_BASE}/${subPath}/`;
+async function readSlugsFromLocal(dir, extension) {
+  const normalizedExt = extension.startsWith('.') ? extension : `.${extension}`;
+  const normalizedExtLower = normalizedExt.toLowerCase();
   try {
-    const res = await fetchFn(url, { cache: 'no-store' });
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`);
-    }
-    const html = await res.text();
-    const slugs = new Set();
-    const normalizedExt = extension.startsWith('.') ? extension : `.${extension}`;
-    const filePattern = new RegExp(`href="([^"]+${normalizedExt})"`, 'gi');
-    let match = null;
-    while ((match = filePattern.exec(html)) !== null) {
-      const href = match[1];
-      const fileName = href.split('/').filter(Boolean).pop();
-      if (fileName && fileName.toLowerCase().endsWith(normalizedExt.toLowerCase())) {
-        slugs.add(fileName.slice(0, -normalizedExt.length));
-      }
-    }
-    return Array.from(slugs);
+    const entries = await fs.readdir(dir, { withFileTypes: true });
+    return entries
+      .filter((entry) => entry.isFile() && entry.name.toLowerCase().endsWith(normalizedExtLower))
+      .map((entry) => entry.name.slice(0, -normalizedExt.length).toLowerCase());
   } catch (err) {
-    console.warn(`Failed to read CDN directory ${url}:`, err?.message || err);
+    if (err?.code !== 'ENOENT') {
+      console.warn(`Failed to read local directory ${dir}:`, err?.message || err);
+    }
     return [];
   }
 }
@@ -65,9 +52,9 @@ async function fetchSlugsFromCdn(subPath, extension) {
 async function generate() {
   const today = formatDate();
 
-  // Discover slugs from CDN (mirrors app behaviour)
-  const serviceSlugs = await fetchSlugsFromCdn('service', '.json');
-  const guideSlugs = new Set(await fetchSlugsFromCdn('guide', '.md'));
+  // Discover slugs from local source files
+  const serviceSlugs = (await readSlugsFromLocal(CHAINS_SERVICE_DIR, '.json')).sort();
+  const guideSlugs = new Set(await readSlugsFromLocal(CHAINS_GUIDE_DIR, '.md'));
 
   // Core static routes
   const entries = [
@@ -117,20 +104,24 @@ async function generate() {
 
   // Optionally notify search engines about updated sitemap
   if (PING_SITEMAP) {
-    const sitemapUrlEnc = encodeURIComponent(sitemapUrl);
-    const targets = [
-      `https://www.google.com/ping?sitemap=${sitemapUrlEnc}`,
-      `https://www.bing.com/ping?sitemap=${sitemapUrlEnc}`,
-    ];
-    for (const t of targets) {
-      try {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 5000);
-        const res = await fetchFn(t, { signal: controller.signal });
-        clearTimeout(timeout);
-        console.log(`Pinged: ${t} -> ${res.status}`);
-      } catch (e) {
-        console.warn(`Ping failed: ${t}`, e?.message || e);
+    if (!fetchFn) {
+      console.warn('Skipping sitemap ping because fetch is unavailable. Use Node 18+ to enable pinging.');
+    } else {
+      const sitemapUrlEnc = encodeURIComponent(sitemapUrl);
+      const targets = [
+        `https://www.google.com/ping?sitemap=${sitemapUrlEnc}`,
+        `https://www.bing.com/ping?sitemap=${sitemapUrlEnc}`,
+      ];
+      for (const t of targets) {
+        try {
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 5000);
+          const res = await fetchFn(t, { signal: controller.signal });
+          clearTimeout(timeout);
+          console.log(`Pinged: ${t} -> ${res.status}`);
+        } catch (e) {
+          console.warn(`Ping failed: ${t}`, e?.message || e);
+        }
       }
     }
   }
