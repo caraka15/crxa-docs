@@ -12,8 +12,6 @@ import { useThrottle } from '../hooks/useThrottle';
 
 export const Header = () => {
   const { theme, toggleTheme } = useTheme();
-  const [isExplorerSticky, setExplorerSticky] = useState(false);
-  const [isExplorerOpen, setExplorerOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -28,89 +26,65 @@ export const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleExplorerOpenChange = (open: boolean) => {
-    // Only handle hover changes if the menu is not sticky
-    if (!isExplorerSticky) {
-      setExplorerOpen(open);
-    }
-  };
-
-  const handleExplorerClick = () => {
-    if (isExplorerSticky) {
-      // If it's sticky, unstick it and close it
-      setExplorerSticky(false);
-      setExplorerOpen(false);
-    } else {
-      // If it's not sticky, make it sticky and open it
-      setExplorerSticky(true);
-      setExplorerOpen(true);
-    }
-  };
-
 
   return (
     <header
-      className={`navbar sticky top-0 z-50 transition-all duration-500 ${
-        isScrolled
-          ? 'bg-base-100/90 backdrop-blur border-b border-base-300 py-3 shadow-lg'
-          : 'bg-transparent border-b border-transparent py-6'
-      }`}
+      className="fixed z-50 flex items-center justify-between transition-all duration-700 ease-in-out"
+      style={{
+        top: isScrolled ? '1rem' : '0',
+        left: isScrolled ? '50%' : '0',
+        right: isScrolled ? 'auto' : '0',
+        transform: isScrolled ? 'translateX(-50%)' : 'translateX(0)',
+        width: isScrolled ? '95%' : '100%',
+        maxWidth: isScrolled ? '80rem' : 'none',
+        paddingLeft: isScrolled ? '1.5rem' : '2rem',
+        paddingRight: isScrolled ? '1.5rem' : '2rem',
+        paddingTop: isScrolled ? '0.75rem' : '1rem',
+        paddingBottom: isScrolled ? '0.75rem' : '1rem',
+        borderRadius: isScrolled ? '9999px' : '0',
+        backgroundColor: isScrolled ? 'hsl(var(--background) / 0.8)' : 'hsl(var(--background) / 0.7)',
+        backdropFilter: isScrolled ? 'blur(24px)' : 'blur(12px)',
+        border: isScrolled ? '1px solid hsl(var(--border) / 0.3)' : 'none',
+        borderBottom: isScrolled ? 'none' : '1px solid hsl(var(--border) / 0.2)',
+        boxShadow: isScrolled ? '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' : 'none',
+      }}
     >
-      <div className="navbar-start">
-        <Link to="/" className="flex items-center gap-3 font-bold text-primary hover:text-secondary transition-colors ml-5">
-          <img
-            src="/logo.png"
-            alt="Crxanode logo"
-            className={`rounded-full transition-all duration-500 ${isScrolled ? 'w-8 h-8' : 'w-10 h-10'
-              }`}
-            onError={(e) => {
-              e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiNGRjY1MDAiLz4KPHRleHQgeD0iMTYiIHk9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjE0Ij5DPC90ZXh0Pgo8L3N2Zz4K';
-            }}
-          />
-          <span className={`transition-all duration-500 ${isScrolled ? 'text-xl' : 'text-2xl'
-            }`}>
-            Crxanode Service
-          </span>
-        </Link>
-      </div>
+      {/* Logo & Brand */}
+      <Link to="/" className="flex items-center gap-3 font-bold text-primary hover:text-secondary transition-colors">
+        <img
+          src="/logo.png"
+          alt="Crxanode logo"
+          className="w-9 h-9 rounded-full transition-all duration-500"
+          onError={(e) => {
+            e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiNGRjY1MDAiLz4KPHRleHQgeD0iMTYiIHk9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSJib2xkIiBmb250LXNpemU9IjE0Ij5DPC90ZXh0Pgo8L3N2Zz4K';
+          }}
+        />
+        <span className="text-lg md:text-xl transition-all duration-500">
+          Crxanode Service
+        </span>
+      </Link>
 
-      <div className="navbar-end">
-        <nav className="hidden md:flex items-center gap-1 mr-2">
-          <HoverCard
-            open={isExplorerOpen}
-            onOpenChange={handleExplorerOpenChange}
-            openDelay={100}
-            closeDelay={100}
-          >
-            <HoverCardTrigger asChild>
-              <Button
-                variant="ghost"
-                onClick={handleExplorerClick}
-                className={`transition-all duration-500 hover:bg-base-300 hover:text-primary ${isScrolled ? 'text-sm' : 'text-base'
-                  }`}
-              >
-                Explorer
-              </Button>
-            </HoverCardTrigger>
-            <HoverCardContent className="w-48 p-2 bg-base-200 backdrop-blur-sm border border-base-300 shadow-xl " align="start">
-              <div className="flex flex-col space-y-1">
-                <a href="https://explorer.crxanode.me" target="_blank" rel="noopener noreferrer" className="dark:hover:bg-slate-900 hover:bg-base-300 block px-3 py-2 text-sm rounded-md hover:bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                  Mainnet
-                </a>
-                <a href="https://testnet-explorer.crxanode.me" target="_blank" rel="noopener noreferrer" className="dark:hover:bg-slate-900 hover:bg-base-300 block px-3 py-2 text-sm rounded-md hover:bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                  Testnet
-                </a>
-              </div>
-            </HoverCardContent>
-          </HoverCard>
-          <Button variant="ghost" asChild className={`transition-all duration-500 hover:bg-base-300 hover:text-primary ${isScrolled ? 'text-sm' : 'text-base'
-            }`}>
-            <a href="https://cdn.crxanode.me" target="_blank" rel="noopener noreferrer">
-              CDN
-            </a>
-          </Button>
-        </nav>
+      {/* Desktop Navigation - Direct Links */}
+      <nav className="hidden md:flex items-center gap-1">
+        <Button variant="ghost" asChild className="hover:bg-accent/50 hover:text-primary">
+          <a href="https://explorer.crxanode.me" target="_blank" rel="noopener noreferrer">
+            Explorer Mainnet
+          </a>
+        </Button>
+        <Button variant="ghost" asChild className="hover:bg-accent/50 hover:text-primary">
+          <a href="https://testnet-explorer.crxanode.me" target="_blank" rel="noopener noreferrer">
+            Explorer Testnet
+          </a>
+        </Button>
+        <Button variant="ghost" asChild className="hover:bg-accent/50 hover:text-primary">
+          <a href="https://cdn.crxanode.me" target="_blank" rel="noopener noreferrer">
+            CDN
+          </a>
+        </Button>
+      </nav>
 
+      {/* Right Side - Mobile Menu & Theme Toggle */}
+      <div className="flex items-center gap-2">
         {/* Mobile Menu */}
         <HoverCard open={isMobileMenuOpen} onOpenChange={setMobileMenuOpen}>
           <HoverCardTrigger asChild>
@@ -123,13 +97,13 @@ export const Header = () => {
               <Menu className="h-5 w-5" />
             </Button>
           </HoverCardTrigger>
-          <HoverCardContent className="w-48 p-2 bg-base-200 backdrop-blur-sm border border-base-300 shadow-xl" align="end">
+          <HoverCardContent className="w-48 p-2 bg-base-200/95 backdrop-blur-sm border border-border shadow-xl" align="end">
             <div className="flex flex-col space-y-1">
               <a
                 href="https://explorer.crxanode.me"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="dark:hover:bg-slate-900 hover:bg-base-300 block px-3 py-2 text-sm rounded-md hover:bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="hover:bg-accent block px-3 py-2 text-sm rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Explorer (Mainnet)
@@ -138,7 +112,7 @@ export const Header = () => {
                 href="https://testnet-explorer.crxanode.me"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="dark:hover:bg-slate-900 hover:bg-base-300 block px-3 py-2 text-sm rounded-md hover:bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="hover:bg-accent block px-3 py-2 text-sm rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Explorer (Testnet)
@@ -147,7 +121,7 @@ export const Header = () => {
                 href="https://cdn.crxanode.me"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="dark:hover:bg-slate-900 hover:bg-base-300 block px-3 py-2 text-sm rounded-md hover:bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="hover:bg-accent block px-3 py-2 text-sm rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 CDN
@@ -156,9 +130,10 @@ export const Header = () => {
           </HoverCardContent>
         </HoverCard>
 
+        {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
-          className="btn btn-ghost btn-circle"
+          className="btn btn-ghost btn-circle btn-sm"
           aria-label="Toggle theme"
         >
           {theme === 'mylight' ? (
