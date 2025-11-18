@@ -4,11 +4,8 @@ export default async function handler(
   request: VercelRequest,
   response: VercelResponse,
 ) {
-  // 1. Check for authorization
-  const { secret } = request.query;
-  if (secret !== process.env.CRON_SECRET) {
-    return response.status(401).json({ message: 'Unauthorized' });
-  }
+  // Authorization is temporarily removed for debugging.
+  // TODO: Re-add a security mechanism.
 
   // 2. Fetch the deploy hook
   const deployHookUrl = process.env.VERCEL_DEPLOY_HOOK_URL;

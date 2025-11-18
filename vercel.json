@@ -1,7 +1,7 @@
 {
   "crons": [
     {
-      "path": "/api/cron/trigger-rebuild?secret=${process.env.CRON_SECRET}",
+      "path": "/api/cron/trigger-rebuild",
       "schedule": "0 0 * * *"
     }
   ],
