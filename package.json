@@ -6,12 +6,13 @@
   "scripts": {
     "predev": "node scripts/generate-sitemap.mjs",
     "dev": "vite",
-    "prebuild": "node scripts/generate-sitemap.mjs",
+    "prebuild": "node scripts/generate-sitemap.mjs && node scripts/generate-locations.mjs",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "generate:sitemap": "node scripts/generate-sitemap.mjs"
+    "generate:sitemap": "node scripts/generate-sitemap.mjs",
+    "generate:locations": "node scripts/generate-locations.mjs"
   },
   "dependencies": {
     "@cosmjs/crypto": "^0.36.1",

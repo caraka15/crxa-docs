@@ -45,7 +45,7 @@ export function GuideSidebar({ content, isOpen, onClose, onSearchOpen }: GuideSi
 
       for (let i = headingElements.length - 1; i >= 0; i--) {
         const element = headingElements[i];
-        if (element && element.getBoundingClientRect().top <= 120) {
+        if (element && element.getBoundingClientRect().top <= 180) {
           setActiveId(element.id);
           break;
         }

@@ -1,4 +1,10 @@
 {
+  "crons": [
+    {
+      "path": "/api/cron/trigger-rebuild",
+      "schedule": "0 0 * * *"
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/(.*)",

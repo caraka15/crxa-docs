@@ -29,7 +29,7 @@ export const useServerLocations = () => {
       setError(null);
 
       try {
-        const response = await fetch('/api/server-locations', {
+        const response = await fetch('/server-locations.json', {
           signal: controller.signal,
           headers: {
             Accept: 'application/json',

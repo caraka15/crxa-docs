@@ -25,3 +25,4 @@ dist-ssr
 \n+# Generated at build time
 public/sitemap.xml
 public/robots.txt
+public/server

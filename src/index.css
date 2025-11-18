@@ -25,10 +25,24 @@
       --input: hsl(var(--b3));
       --ring: hsl(var(--p));
       --radius: 0.5rem;
+      --page-scroll-offset: calc(5rem + env(safe-area-inset-top, 0px));
     }
 
-  /* Theme transition */
-  * {
+    /* keep anchor targets visible below the sticky header */
+    html {
+      scroll-padding-block-start: var(--page-scroll-offset);
+    }
+
+    body {
+      scroll-padding-block-start: var(--page-scroll-offset);
+    }
+
+    [id] {
+      scroll-margin-top: var(--page-scroll-offset);
+    }
+
+    /* Theme transition */
+    * {
     transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   }
 
@@ -112,10 +126,10 @@
       transform: scale(1);
     }
   }
+
 }
 
-@layer utilities {
-  /* Gradient animation */
+@layer utilities {  /* Gradient animation */
   @keyframes gradient {
     0%, 100% {
       background-position: 0% 50%;

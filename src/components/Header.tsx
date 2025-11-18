@@ -53,9 +53,9 @@ export const Header = () => {
           : 'hsl(var(--background) / 0.7)',
         backdropFilter: isScrolled ? 'blur(24px)' : 'blur(12px)',
         WebkitBackdropFilter: isScrolled ? 'blur(24px)' : 'blur(12px)',
-        borderTop: isScrolled ? '1px solid hsl(var(--border) / 0.3)' : 'none',
-        borderLeft: isScrolled ? '1px solid hsl(var(--border) / 0.3)' : 'none',
-        borderRight: isScrolled ? '1px solid hsl(var(--border) / 0.3)' : 'none',
+        borderTop: isScrolled ? '1px solid hsl(var(--border) / 0.7)' : 'none',
+        borderLeft: isScrolled ? '1px solid hsl(var(--border) / 0.7)' : 'none',
+        borderRight: isScrolled ? '1px solid hsl(var(--border) / 0.7)' : 'none',
         borderBottom: isScrolled
           ? '1px solid hsl(var(--border) / 0.3)'
           : '1px solid hsl(var(--border) / 0.2)',

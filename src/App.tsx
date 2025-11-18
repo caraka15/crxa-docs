@@ -44,7 +44,7 @@ const App = () => {
         <div className="relative min-h-screen flex flex-col">
           <NetworkBackground />
           <Header />
-          <div className="relative z-10 flex-grow">
+          <div className="relative z-10 flex-grow pt-20">
             <Toaster />
             <Sonner />
             <AnimatedRoutes />

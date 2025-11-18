@@ -25,40 +25,40 @@ export const SearchModal = ({ isOpen, onClose, content }: SearchModalProps) => {
 
     const searchQuery = query.toLowerCase();
     const searchResults: SearchResult[] = [];
-    
+
     // Split content into sections by headers
     const lines = content.split('\n');
     let currentHeader = '';
     let currentHeaderId = '';
     let sectionContent: string[] = [];
-    
+
     const processSectionContent = () => {
       if (sectionContent.length === 0) return;
-      
+
       const fullContent = sectionContent.join('\n');
       if (fullContent.toLowerCase().includes(searchQuery)) {
         // Find the specific line(s) that match
-        const matchingLines = sectionContent.filter(line => 
+        const matchingLines = sectionContent.filter(line =>
           line.toLowerCase().includes(searchQuery)
         );
-        
+
         if (matchingLines.length > 0) {
           // Get context around the match
           let preview = matchingLines[0];
           const queryIndex = preview.toLowerCase().indexOf(searchQuery);
-          
+
           // Get surrounding context
           const start = Math.max(0, queryIndex - 50);
           const end = Math.min(preview.length, queryIndex + searchQuery.length + 100);
-          
+
           if (start > 0) preview = '...' + preview.substring(start, end);
           else preview = preview.substring(start, end);
-          
+
           if (end < matchingLines[0].length) preview += '...';
-          
+
           // Clean up markdown syntax for preview
           preview = preview.replace(/(\*\*|__|\*|_|`|~)/g, '');
-          
+
           searchResults.push({
             id: currentHeaderId,
             header: currentHeader || 'Introduction',
@@ -72,17 +72,17 @@ export const SearchModal = ({ isOpen, onClose, content }: SearchModalProps) => {
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
       const headingMatch = line.match(/^(#{1,6})\s+(.+)$/);
-      
+
       if (headingMatch) {
         // Process previous section
         processSectionContent();
-        
+
         // Start new section
         const headerText = headingMatch[2].trim();
         currentHeader = headerText;
         currentHeaderId = headerText.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
         sectionContent = [];
-        
+
         // Check if header itself matches
         if (headerText.toLowerCase().includes(searchQuery)) {
           searchResults.push({
@@ -96,7 +96,7 @@ export const SearchModal = ({ isOpen, onClose, content }: SearchModalProps) => {
         sectionContent.push(line);
       }
     }
-    
+
     // Process last section
     processSectionContent();
 
@@ -129,7 +129,7 @@ export const SearchModal = ({ isOpen, onClose, content }: SearchModalProps) => {
     <div className="fixed inset-0 bg-black/50 flex items-start justify-center pt-20 z-[999]" onClick={onClose}>
       <div className="bg-base-100 rounded-lg shadow-lg w-full max-w-2xl mx-4" onClick={(e) => e.stopPropagation()}>
         <div className="p-4">
-          <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center gap-2">
             <svg className="w-5 h-5 text-base-content/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
@@ -150,9 +150,9 @@ export const SearchModal = ({ isOpen, onClose, content }: SearchModalProps) => {
               </svg>
             </button>
           </div>
-          
+
           {results.length > 0 && (
-            <div className="max-h-96 overflow-y-auto space-y-1">
+            <div className="max-h-96 overflow-y-auto space-y-1 mt-4">
               {results.map((result, index) => (
                 <div
                   key={`${result.id}-${index}`}
@@ -180,7 +180,7 @@ export const SearchModal = ({ isOpen, onClose, content }: SearchModalProps) => {
               ))}
             </div>
           )}
-          
+
           {query.trim() && results.length === 0 && (
             <div className="p-8 text-center text-base-content/50">
               <svg className="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
