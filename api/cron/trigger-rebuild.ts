@@ -4,9 +4,9 @@ export default async function handler(
   request: VercelRequest,
   response: VercelResponse,
 ) {
-  // 1. Check for authorization (important to prevent abuse)
-  const authHeader = request.headers.authorization;
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  // 1. Check for authorization
+  const { secret } = request.query;
+  if (secret !== process.env.CRON_SECRET) {
     return response.status(401).json({ message: 'Unauthorized' });
   }
 
