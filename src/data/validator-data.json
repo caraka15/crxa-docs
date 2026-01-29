@@ -2,10 +2,10 @@
   "validatorInfo": {
     "name": "Crxanode",
     "description": "Professional Proof-of-Stake validator for Cosmos ecosystem",
-    "website": "https://crxanode.me",
+    "website": "https://crxanode.com",
     "logo": "/logo.png",
     "explorer": {
-      "baseUrl": "explorer.crxanode.me",
+      "baseUrl": "explorer.crxanode.com",
       "stakingPath": "/{chainName}/staking/{valoper}"
     }
   },

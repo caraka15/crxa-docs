@@ -1,6 +1,6 @@
 import dns from 'node:dns/promises';
 
-const ROOT_DOMAIN = 'crxanode.me';
+const ROOT_DOMAIN = 'crxanode.com';
 const SUBDOMAIN_API = `https://api.subdomainfinder.in/?domain=${ROOT_DOMAIN}`;
 const GOOGLE_DNS_ENDPOINT = 'https://dns.google/resolve';
 const IP_API_ENDPOINT = 'http://ip-api.com/batch';
@@ -251,8 +251,7 @@ const rebuildPayload = async (): Promise<ServerLocationsResponse> => {
       locations.push(location);
     } catch (error) {
       errors.push(
-        `${entry.domain}: ${
-          error instanceof Error ? error.message : String(error ?? 'unknown error')
+        `${entry.domain}: ${error instanceof Error ? error.message : String(error ?? 'unknown error')
         }`
       );
     }

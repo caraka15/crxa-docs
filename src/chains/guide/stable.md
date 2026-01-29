@@ -177,7 +177,7 @@ cp $HOME/.stabled/data/priv_validator_state.json \
 
 stabled tendermint unsafe-reset-all --home $HOME/.stabled --keep-addr-book
 
-curl -L https://cdn.crxanode.me/stable/stable-testnet-latest.tar.lz4 \
+curl -L https://cdn.crxanode.com/stable/stable-testnet-latest.tar.lz4 \
   | lz4 -dc - | tar -xf - -C $HOME/.stabled
 
 mv $HOME/.stabled/priv_validator_state.json.backup \

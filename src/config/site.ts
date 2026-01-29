@@ -1,4 +1,4 @@
-const DEFAULT_SITE_URL = 'https://docs.crxanode.me';
+const DEFAULT_SITE_URL = 'https://docs.crxanode.com';
 
 const resolveSiteUrl = (): string => {
   let envUrl: string | undefined;

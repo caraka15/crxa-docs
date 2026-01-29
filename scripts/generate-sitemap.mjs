@@ -11,7 +11,7 @@ const OUTPUT_FILE = path.join(PUBLIC_DIR, 'sitemap.xml');
 const ROBOTS_FILE = path.join(PUBLIC_DIR, 'robots.txt');
 
 // Base URL for absolute links in sitemap. Set via env for production deploys.
-const SITE_BASE_URL = (process.env.SITE_BASE_URL || 'https://docs.crxanode.me').replace(/\/$/, '');
+const SITE_BASE_URL = (process.env.SITE_BASE_URL || 'https://docs.crxanode.com').replace(/\/$/, '');
 const PING_SITEMAP = /^1|true$/i.test(String(process.env.PING_SITEMAP || ''));
 
 const fetchFn = globalThis.fetch;

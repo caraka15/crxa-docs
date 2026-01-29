@@ -9,7 +9,7 @@ export default defineConfig({
     port: 8080,
     proxy: {
       '/_vercel/insights/script.js': {
-        target: 'https://docs.crxanode.me',
+        target: 'https://docs.crxanode.com',
         changeOrigin: true,
       },
     },

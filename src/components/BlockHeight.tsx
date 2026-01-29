@@ -143,7 +143,7 @@ export const BlockHeight = ({ rpcUrl, pollMs = 5000, chainSlug, chainType }: Blo
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rpcUrl, wsUrl, pollMs]);
 
-  const explorerUrl = chainType === 'testnet' ? 'testnet-explorer.crxanode.me' : 'explorer.crxanode.me';
+  const explorerUrl = chainType === 'testnet' ? 'testnet-explorer.crxanode.com' : 'explorer.crxanode.com';
 
   if (error && !blockHeight && hasAttempted) {
     return <span className="text-error text-xs">Offline</span>;

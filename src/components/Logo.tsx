@@ -9,9 +9,9 @@ interface LogoProps {
 export const Logo = ({ slug, chainName, className = "w-8 h-8" }: LogoProps) => {
   const [currentExtension, setCurrentExtension] = useState(0);
   const [hasError, setHasError] = useState(false);
-  
+
   const extensions = ['png', 'svg', 'jpg', 'jpeg', 'webp'];
-  const logoUrl = `https://explorer.crxanode.me/logos/${slug.toLowerCase()}.${extensions[currentExtension]}`;
+  const logoUrl = `https://explorer.crxanode.com/logos/${slug.toLowerCase()}.${extensions[currentExtension]}`;
 
   const handleError = () => {
     if (currentExtension < extensions.length - 1) {

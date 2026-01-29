@@ -30,7 +30,7 @@ export const SnapshotTable = ({ chain }: SnapshotTableProps) => {
       if (!chain || !chain.service) return;
       try {
         setLoading(true);
-        const response = await fetch(`https://cdn.crxanode.me/${chain.service.chainName.toLowerCase()}/index.json?t=${new Date().getTime()}`);
+        const response = await fetch(`https://cdn.crxanode.com/${chain.service.chainName.toLowerCase()}/index.json?t=${new Date().getTime()}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -39,7 +39,7 @@ export const SnapshotTable = ({ chain }: SnapshotTableProps) => {
           ...item,
           sizeBytes: item.size_bytes,
           availableAt: item.mtime,
-          url: `https://cdn.crxanode.me${item.download}`,
+          url: `https://cdn.crxanode.com${item.download}`,
           checksum: `sha256:${item.checksum_sha256}`
         })));
       } catch (e) {

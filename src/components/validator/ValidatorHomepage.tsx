@@ -12,7 +12,7 @@ import { ChainService, ValidatorStats, Chain } from '@/types/chain';
 import validatorData from '@/data/validator-data.json';
 import { Shield, TrendingUp, Users, DollarSign, ExternalLink, Zap, Lock, HeartHandshake, Sparkles, ArrowRight, CheckCircle2, Globe } from 'lucide-react';
 
-const LOGO_BASE_URL = 'https://explorer.crxanode.me/logos/';
+const LOGO_BASE_URL = 'https://explorer.crxanode.com/logos/';
 const EXTENSIONS = ['png', 'svg', 'jpg'];
 
 const getUptimeColor = (uptime: number): string => {
@@ -306,7 +306,7 @@ export const ValidatorHomepage = () => {
         {/* Global Server Infrastructure Section */}
         <section className="py-24 relative overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
-          
+
           <div className="container mx-auto px-4 relative z-10">
             <div className="text-center mb-16">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 mb-4 animate-fade-in">
@@ -578,7 +578,7 @@ export const ValidatorHomepage = () => {
                 </a>
 
                 <a
-                  href="mailto:admin@crxanode.me"
+                  href="mailto:admin@crxanode.com"
                   className="group btn btn-outline border-2 border-white/50 text-white hover:bg-white/20 hover:border-white btn-lg text-lg px-8 hover:scale-110 transition-all duration-300 shadow-xl"
                 >
                   <span className="flex items-center gap-2">

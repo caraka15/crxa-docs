@@ -26,7 +26,7 @@ export default async function handler(req: Request) {
     : null;
 
   const forwardedHost = req.headers.get('x-forwarded-host');
-  const hostHeader = forwardedHost ?? req.headers.get('host') ?? 'docs.crxanode.me';
+  const hostHeader = forwardedHost ?? req.headers.get('host') ?? 'docs.crxanode.com';
   const hostWithoutPort = hostHeader.split(':')[0]?.toLowerCase() ?? hostHeader.toLowerCase();
   const isLocalHost =
     hostWithoutPort === 'localhost' ||
@@ -48,7 +48,7 @@ export default async function handler(req: Request) {
   if (chainSlug) {
     const extensions = ['png', 'svg', 'jpg', 'jpeg', 'webp'];
     for (const ext of extensions) {
-      const candidate = `https://explorer.crxanode.me/logos/${chainSlug}.${ext}`;
+      const candidate = `https://explorer.crxanode.com/logos/${chainSlug}.${ext}`;
       try {
         const response = await fetch(candidate, { cache: 'no-store' });
         if (response.ok) {
@@ -161,7 +161,7 @@ export default async function handler(req: Request) {
 
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', color: '#64748b', fontSize: 24 }}>
-            <span>docs.crxanode.me</span>
+            <span>docs.crxanode.com</span>
             <span>Reliable Cosmos validator services & guides.</span>
           </div>
           {badgeLabel ? (

@@ -64,8 +64,8 @@ paxid config set client node tcp://localhost:${APP_PORT}657
 ## 🌱 Download Genesis & Addrbook
 
 ```bash
-curl -Ls https://files.crxanode.me/paxi/genesis.json > ~/go/bin/paxi/config/genesis.json
-curl -Ls https://files.crxanode.me/paxi/addrbook.json > ~/go/bin/paxi/config/addrbook.json
+curl -Ls https://files.crxanode.com/paxi/genesis.json > ~/go/bin/paxi/config/genesis.json
+curl -Ls https://files.crxanode.com/paxi/addrbook.json > ~/go/bin/paxi/config/addrbook.json
 ```
 
 ---
@@ -150,7 +150,7 @@ sudo apt install lz4 -y
 sudo systemctl stop paxid
 cp ~/go/bin/paxi/data/priv_validator_state.json ~/go/bin/paxi/priv_validator_state.json.backup
 paxid tendermint unsafe-reset-all --home ~/go/bin/paxi --keep-addr-book
-curl -L https://files.crxanode.me/paxi/paxi-latest.tar.lz4 | lz4 -dc - | tar -xf - -C ~/go/bin/paxi
+curl -L https://files.crxanode.com/paxi/paxi-latest.tar.lz4 | lz4 -dc - | tar -xf - -C ~/go/bin/paxi
 mv ~/go/bin/paxi/priv_validator_state.json.backup ~/go/bin/paxi/data/priv_validator_state.json
 sudo systemctl restart paxid && sudo journalctl -u paxid -fo cat
 ```

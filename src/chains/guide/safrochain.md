@@ -73,8 +73,8 @@ safrochaind config set client node tcp://localhost:${SAFRO_PORT}657
 ## 🌱 Download Genesis \& Addrbook
 
 ```bash
-curl -Ls https://cdn.crxanode.me/safrochain/genesis.json > $HOME/.safrochain/config/genesis.json
-curl -Ls https://cdn.crxanode.me/safrochain/addrbook.json > $HOME/.safrochain/config/addrbook.json
+curl -Ls https://cdn.crxanode.com/safrochain/genesis.json > $HOME/.safrochain/config/genesis.json
+curl -Ls https://cdn.crxanode.com/safrochain/addrbook.json > $HOME/.safrochain/config/addrbook.json
 ```
 
 
@@ -163,7 +163,7 @@ sudo apt install lz4 -y
 sudo systemctl stop safrochaind
 cp $HOME/.safrochain/data/priv_validator_state.json $HOME/.safrochain/priv_validator_state.json.backup
 safrochaind tendermint unsafe-reset-all --home $HOME/.safrochain --keep-addr-book
-curl -L https://cdn.crxanode.me/safrochain/safrochain-latest.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.safrochain
+curl -L https://cdn.crxanode.com/safrochain/safrochain-latest.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.safrochain
 mv $HOME/.safrochain/priv_validator_state.json.backup $HOME/.safrochain/data/priv_validator_state.json
 sudo systemctl restart safrochaind && sudo journalctl -u safrochaind -fo cat
 ```

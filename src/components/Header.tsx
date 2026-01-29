@@ -85,17 +85,17 @@ export const Header = () => {
       {/* Desktop Navigation */}
       <nav className="hidden md:flex items-center gap-1">
         <Button variant="ghost" asChild className="hover:bg-accent/50 hover:text-primary transition-colors duration-200">
-          <a href="https://explorer.crxanode.me" target="_blank" rel="noopener noreferrer">
+          <a href="https://explorer.crxanode.com" target="_blank" rel="noopener noreferrer">
             Explorer Mainnet
           </a>
         </Button>
         <Button variant="ghost" asChild className="hover:bg-accent/50 hover:text-primary transition-colors duration-200">
-          <a href="https://testnet-explorer.crxanode.me" target="_blank" rel="noopener noreferrer">
+          <a href="https://testnet-explorer.crxanode.com" target="_blank" rel="noopener noreferrer">
             Explorer Testnet
           </a>
         </Button>
         <Button variant="ghost" asChild className="hover:bg-accent/50 hover:text-primary transition-colors duration-200">
-          <a href="https://cdn.crxanode.me" target="_blank" rel="noopener noreferrer">
+          <a href="https://cdn.crxanode.com" target="_blank" rel="noopener noreferrer">
             CDN
           </a>
         </Button>
@@ -118,7 +118,7 @@ export const Header = () => {
           <HoverCardContent className="w-48 p-2 bg-base-200/95 backdrop-blur-sm border border-border shadow-xl" align="end">
             <div className="flex flex-col space-y-1">
               <a
-                href="https://explorer.crxanode.me"
+                href="https://explorer.crxanode.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:bg-accent block px-3 py-2 text-sm rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -127,7 +127,7 @@ export const Header = () => {
                 Explorer (Mainnet)
               </a>
               <a
-                href="https://testnet-explorer.crxanode.me"
+                href="https://testnet-explorer.crxanode.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:bg-accent block px-3 py-2 text-sm rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -136,7 +136,7 @@ export const Header = () => {
                 Explorer (Testnet)
               </a>
               <a
-                href="https://cdn.crxanode.me"
+                href="https://cdn.crxanode.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:bg-accent block px-3 py-2 text-sm rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
