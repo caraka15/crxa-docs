@@ -5,30 +5,23 @@
 | CPU | 4 Cores | 4+ Cores |
 | RAM | 8 GB | 8+ GB |
 | Storage | 400 GB SSD | 1 TB NVMe SSD |
-| OS | Ubuntu 22.04 / 24.04 | Ubuntu 22.04 / 24.04 |
-| Golang | 1.25.8 | 1.25.8+ |
+| OS | Ubuntu 22.04 | Ubuntu 22.04 |
+| Golang | 1.23.9 | 1.23.9+ |
 
 ---
 
-## 🛠 Install Dependencies & Go
+## 🛠 Install Go (if not installed)
 
-**Install dependencies:**
-```bash
-sudo apt update
-sudo apt install -y build-essential git curl jq make pkg-config libssl-dev wget clang
-```
-
-**Install Go 1.25.8:**
 ```bash
 cd $HOME
-VER="1.25.8"
-wget "https://go.dev/dl/go$VER.linux-amd64.tar.gz"
+VER="1.23.9"
+wget "https://golang.org/dl/go$VER.linux-amd64.tar.gz"
 sudo rm -rf /usr/local/go
 sudo tar -C /usr/local -xzf "go$VER.linux-amd64.tar.gz"
 rm "go$VER.linux-amd64.tar.gz"
 
 [ ! -f ~/.bash_profile ] && touch ~/.bash_profile
-echo "export PATH=\$PATH:/usr/local/go/bin:\$HOME/go/bin" >> ~/.bash_profile
+echo "export PATH=\$PATH:/usr/local/go/bin:~/go/bin" >> ~/.bash_profile
 source $HOME/.bash_profile
 [ ! -d ~/go/bin ] && mkdir -p ~/go/bin
 ```
@@ -40,22 +33,21 @@ source $HOME/.bash_profile
 ```bash
 echo "export SAFRO_WALLET=<YOUR_WALLET>" >> $HOME/.bash_profile
 echo "export SAFRO_MONIKER=<YOUR_MONIKER>" >> $HOME/.bash_profile
-echo "export SAFRO_PORT=<CUSTOM_PORT_PREFIX>" >> $HOME/.bash_profile
-echo "export SAFRO_CHAIN_ID=safrochain-1" >> $HOME/.bash_profile
+echo "export SAFRO_PORT=<CUSTOM_PORT>" >> $HOME/.bash_profile
+echo "export SAFRO_CHAIN_ID=safro-testnet-1" >> $HOME/.bash_profile
 source $HOME/.bash_profile
 ```
 
 ---
 
-## 📥 Download & Build Binary
+## 📥 Download Binary
 
 ```bash
 cd $HOME
 rm -rf safrochain-node
 git clone https://github.com/Safrochain-Org/safrochain-node.git
 cd safrochain-node
-git fetch --tags
-git checkout v0.2.2
+git checkout release/v0.1.0
 make install
 ```
 
@@ -64,12 +56,9 @@ make install
 ## 🔧 Init & Config
 
 ```bash
-safrochaind init $SAFRO_MONIKER --chain-id $SAFRO_CHAIN_ID --home $HOME/.safrochain
+safrochaind init $SAFRO_MONIKER --chain-id $SAFRO_CHAIN_ID
 safrochaind config set client chain-id $SAFRO_CHAIN_ID
 safrochaind config set client node tcp://localhost:${SAFRO_PORT}657
-safrochaind config set client keyring-backend file
-safrochaind config set client broadcast-mode sync
-safrochaind config set client output json
 ```
 
 ---
@@ -77,18 +66,8 @@ safrochaind config set client output json
 ## 🌱 Download Genesis & Addrbook
 
 ```bash
-curl -Ls https://cdn.crxanode.com/safrochain/genesis.json > $HOME/.safrochain/config/genesis.json
-curl -Ls https://cdn.crxanode.com/safrochain/addrbook.json > $HOME/.safrochain/config/addrbook.json
-```
-
----
-
-## 🌱 Configure Seeds
-
-```bash
-SEEDS="bc772fdc9749e6dfd200a9428f07d86fe4fd34ec@seed.safrochain.network:26666,d323d296ba55e89fb6ce1a724f8da1740bd8cbb0@seed2.safrochain.network:26670"
-sed -i -e "s|^seeds *=.*|seeds = \"$SEEDS\"|" $HOME/.safrochain/config/config.toml
-sed -i -e "s|^persistent_peers *=.*|persistent_peers = \"\"|" $HOME/.safrochain/config/config.toml
+curl -Ls https://cdn.crxanode.com/safrochain-testnet/genesis.json > $HOME/.safrochain/config/genesis.json
+curl -Ls https://cdn.crxanode.com/safrochain-testnet/addrbook.json > $HOME/.safrochain/config/addrbook.json
 ```
 
 ---
@@ -120,7 +99,6 @@ s%:26660%:${SAFRO_PORT}660%g" $HOME/.safrochain/config/config.toml
 sed -i -e "s/^pruning *=.*/pruning = \"custom\"/" $HOME/.safrochain/config/app.toml 
 sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"100\"/" $HOME/.safrochain/config/app.toml
 sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"10\"/" $HOME/.safrochain/config/app.toml
-sed -i -e "s/^min-retain-blocks *=.*/min-retain-blocks = 100000/" $HOME/.safrochain/config/app.toml
 ```
 
 ---
@@ -128,7 +106,7 @@ sed -i -e "s/^min-retain-blocks *=.*/min-retain-blocks = 100000/" $HOME/.safroch
 ## ⛽ Min Gas, Prometheus, Indexer
 
 ```bash
-sed -i 's|minimum-gas-prices =.*|minimum-gas-prices = "0.05usaf"|g' $HOME/.safrochain/config/app.toml
+sed -i 's|minimum-gas-prices =.*|minimum-gas-prices = "0.025usaf"|g' $HOME/.safrochain/config/app.toml
 sed -i -e "s/prometheus = false/prometheus = true/" $HOME/.safrochain/config/config.toml
 sed -i -e "s/^indexer *=.*/indexer = \"null\"/" $HOME/.safrochain/config/config.toml
 ```
@@ -140,16 +118,14 @@ sed -i -e "s/^indexer *=.*/indexer = \"null\"/" $HOME/.safrochain/config/config.
 ```bash
 sudo tee /etc/systemd/system/safrochaind.service > /dev/null <<EOF
 [Unit]
-Description=Safrochain Node
+Description=Safrochain
 After=network-online.target
-
 [Service]
 User=$USER
-ExecStart=$(which safrochaind) start --home $HOME/.safrochain
+ExecStart=$(which safrochaind) start
 Restart=on-failure
-RestartSec=5
-LimitNOFILE=1048576
-
+RestartSec=3
+LimitNOFILE=65535
 [Install]
 WantedBy=multi-user.target
 EOF
@@ -167,14 +143,14 @@ sudo systemctl start safrochaind && sudo journalctl -u safrochaind -fo cat
 
 ---
 
-## 📸 Snapshot (Optional)
+## 📸 Snapshot
 
 ```bash
 sudo apt install lz4 -y
 sudo systemctl stop safrochaind
 cp $HOME/.safrochain/data/priv_validator_state.json $HOME/.safrochain/priv_validator_state.json.backup
 safrochaind tendermint unsafe-reset-all --home $HOME/.safrochain --keep-addr-book
-curl -L https://cdn.crxanode.com/safrochain/safrochain-latest.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.safrochain
+curl -L https://cdn.crxanode.com/safrochain-testnet/safrochain-latest.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.safrochain
 mv $HOME/.safrochain/priv_validator_state.json.backup $HOME/.safrochain/data/priv_validator_state.json
 sudo systemctl restart safrochaind && sudo journalctl -u safrochaind -fo cat
 ```
@@ -211,7 +187,7 @@ source $HOME/.bash_profile
 
 ## 🏦 Create Validator
 
-**After node synced fully, create the validator.json file:**
+**After node synced fully:**
 
 ```bash
 cd $HOME
@@ -224,23 +200,17 @@ echo "{
   \"security\": \"\",
   \"details\": \"<YOUR_DETAILS>\",
   \"commission-rate\": \"0.05\",
-  \"commission-max-rate\": \"0.20\",
-  \"commission-max-change-rate\": \"0.01\",
+  \"commission-max-rate\": \"0.25\",
+  \"commission-max-change-rate\": \"0.1\",
   \"min-self-delegation\": \"1\"
 }" > validator.json
-```
 
-**Submit the transaction:**
-
-```bash
 safrochaind tx staking create-validator validator.json \
     --from $SAFRO_WALLET \
     --chain-id $SAFRO_CHAIN_ID \
+    --fees 5000usaf \
+    --gas-adjustment 1.3 \
     --gas auto \
-    --gas-adjustment 1.5 \
-    --gas-prices 0.05usaf \
-    --home $HOME/.safrochain \
-    --node tcp://localhost:${SAFRO_PORT}657 \
     -y
 ```
 
@@ -257,7 +227,6 @@ sudo systemctl daemon-reload
 sudo rm -rf /etc/systemd/system/safrochaind.service
 sudo rm $(which safrochaind)
 sudo rm -rf $HOME/.safrochain/
-sudo rm -rf $HOME/safrochain-node/
 ```
 
 ---
@@ -274,7 +243,7 @@ sudo journalctl -u safrochaind -fo cat
 sudo systemctl status safrochaind
 ```
 
-**Node info & Sync status**
+**Node info**
 ```bash
 safrochaind status 2>&1 | jq
 ```
@@ -292,6 +261,21 @@ sudo systemctl stop safrochaind
 **Restart service**
 ```bash
 sudo systemctl restart safrochaind
+```
+
+**Reload services**
+```bash
+sudo systemctl daemon-reload
+```
+
+**Enable service**
+```bash
+sudo systemctl enable safrochaind
+```
+
+**Disable service**
+```bash
+sudo systemctl disable safrochaind
 ```
 
 ---
@@ -313,14 +297,34 @@ safrochaind keys add $SAFRO_WALLET --recover
 safrochaind keys list
 ```
 
+**Delete wallet**
+```bash
+safrochaind keys delete $SAFRO_WALLET
+```
+
 **Check Balance**
 ```bash
 safrochaind query bank balances $WALLET_ADDRESS
 ```
 
+**Export Key (save to wallet.backup)**
+```bash
+safrochaind keys export $SAFRO_WALLET
+```
+
+**View EVM Private Key**
+```bash
+safrochaind keys unsafe-export-eth-key $SAFRO_WALLET
+```
+
+**Import Key (restore from wallet.backup)**
+```bash
+safrochaind keys import $SAFRO_WALLET wallet.backup
+```
+
 ---
 
-## 💰 Tokens & Delegation
+## 💰 Tokens
 
 **Withdraw all rewards**
 ```bash
@@ -328,7 +332,7 @@ safrochaind tx distribution withdraw-all-rewards \
   --from $SAFRO_WALLET \
   --chain-id $SAFRO_CHAIN_ID \
   --gas auto --gas-adjustment 1.5 \
-  --gas-prices 0.05usaf -y
+  --fees 5000usaf -y
 ```
 
 **Withdraw rewards + commission (validator)**
@@ -337,7 +341,7 @@ safrochaind tx distribution withdraw-rewards $VALOPER_ADDRESS \
   --from $SAFRO_WALLET --commission \
   --chain-id $SAFRO_CHAIN_ID \
   --gas auto --gas-adjustment 1.5 \
-  --gas-prices 0.05usaf -y
+  --fees 5000usaf -y
 ```
 
 **Delegate to Yourself**
@@ -345,14 +349,38 @@ safrochaind tx distribution withdraw-rewards $VALOPER_ADDRESS \
 safrochaind tx staking delegate $(safrochaind keys show $SAFRO_WALLET --bech val -a) 1000000usaf \
   --from $SAFRO_WALLET --chain-id $SAFRO_CHAIN_ID \
   --gas auto --gas-adjustment 1.5 \
-  --gas-prices 0.05usaf -y
+  --fees 5000usaf -y
+```
+
+**Delegate to another validator**
+```bash
+safrochaind tx staking delegate <TO_VALOPER_ADDRESS> 1000000usaf \
+  --from $SAFRO_WALLET --chain-id $SAFRO_CHAIN_ID \
+  --gas auto --gas-adjustment 1.5 \
+  --fees 5000usaf -y
+```
+
+**Redelegate stake**
+```bash
+safrochaind tx staking redelegate $VALOPER_ADDRESS <TO_VALOPER_ADDRESS> 1000000usaf \
+  --from $SAFRO_WALLET --chain-id $SAFRO_CHAIN_ID \
+  --gas auto --gas-adjustment 1.5 \
+  --fees 5000usaf -y
+```
+
+**Unbond**
+```bash
+safrochaind tx staking unbond $(safrochaind keys show $SAFRO_WALLET --bech val -a) 1000000usaf \
+  --from $SAFRO_WALLET --chain-id $SAFRO_CHAIN_ID \
+  --gas auto --gas-adjustment 1.5 \
+  --fees 5000usaf -y
 ```
 
 **Transfer funds**
 ```bash
 safrochaind tx bank send $WALLET_ADDRESS <TO_WALLET_ADDRESS> 1000000usaf \
   --gas auto --gas-adjustment 1.5 \
-  --gas-prices 0.05usaf -y
+  --fees 5000usaf -y
 ```
 
 ---
@@ -374,18 +402,50 @@ safrochaind q staking validator $VALOPER_ADDRESS
 safrochaind q slashing signing-info $(safrochaind tendermint show-validator)
 ```
 
+**Slashing parameters**
+```bash
+safrochaind q slashing params
+```
+
 **Unjail validator**
 ```bash
 safrochaind tx slashing unjail \
   --from $SAFRO_WALLET \
   --chain-id $SAFRO_CHAIN_ID \
   --gas auto --gas-adjustment 1.5 \
-  --gas-prices 0.05usaf -y
+  --fees 5000usaf -y
 ```
 
 **Active Validators List**
 ```bash
-safrochaind q staking validators -oj --limit=2000 | jq '.validators[] | select(.status=="BOND_STATUS_BONDED")' | jq -r '(.tokens|tonumber/pow(10;6)|floor|tostring) + " " + .description.moniker' | sort -gr | nl
+safrochaind q staking validators -oj --limit=2000 |
+jq '.validators[] | select(.status=="BOND_STATUS_BONDED")' |
+jq -r '(.tokens|tonumber/pow(10;6)|floor|tostring) + " " + .description.moniker' |
+sort -gr | nl
+```
+
+**Check Validator key**
+```bash
+[[ $(safrochaind q staking validator $VALOPER_ADDRESS -oj | jq -r .consensus_pubkey.key) =
+   $(safrochaind status | jq -r .ValidatorInfo.PubKey.value) ]] &&
+echo "Your key status is OK" || echo "Your key status is ERROR"
+```
+
+**Signing info**
+```bash
+safrochaind q slashing signing-info $(safrochaind tendermint show-validator)
+```
+
+**Edit Validator**
+```bash
+safrochaind tx staking edit-validator \
+  --commission-rate 0.1 \
+  --new-moniker "$SAFRO_MONIKER" \
+  --identity "" \
+  --details "Safrochain Node" \
+  --from $SAFRO_WALLET \
+  --chain-id $SAFRO_CHAIN_ID \
+  --fees 5000usaf -y
 ```
 
 ---
@@ -408,5 +468,5 @@ safrochaind tx gov vote 1 yes \
   --from $SAFRO_WALLET \
   --chain-id $SAFRO_CHAIN_ID \
   --gas auto --gas-adjustment 1.5 \
-  --gas-prices 0.05usaf -y
+  --fees 5000usaf -y
 ```
