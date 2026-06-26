@@ -3,7 +3,7 @@
     "api": "https://safrochain-api.crxanode.com",
     "rpc": "https://safrochain-rpc.crxanode.com",
     "grpc": "safrochain-grpc.crxanode.com:443",
-    "peer": "1d6749ca7d5f5276829ab492c3f214cd271cb8f9@159.195.22.69:28656",
+    "peer": "1d6749ca7d5f5276829ab492c3f214cd271cb8f9@safrochain-rpc.crxanode.com:28656",
     "addrbook": "https://cdn.crxanode.com/safrochain/addrbook.json",
     "genesis": "https://cdn.crxanode.com/safrochain/genesis.json",
     "valoper": "addr_safrovaloper1nr0m7gw245rtr5e3vev0p9t5278qj05sv88v6t",

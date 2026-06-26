@@ -83,12 +83,13 @@ curl -Ls https://cdn.crxanode.com/safrochain/addrbook.json > $HOME/.safrochain/c
 
 ---
 
-## 🌱 Configure Seeds
+## 🌱 Configure Seeds & Peers
 
 ```bash
 SEEDS="bc772fdc9749e6dfd200a9428f07d86fe4fd34ec@seed.safrochain.network:26666,d323d296ba55e89fb6ce1a724f8da1740bd8cbb0@seed2.safrochain.network:26670"
+PEERS="1d6749ca7d5f5276829ab492c3f214cd271cb8f9@safrochain-rpc.crxanode.com:28656"
 sed -i -e "s|^seeds *=.*|seeds = \"$SEEDS\"|" $HOME/.safrochain/config/config.toml
-sed -i -e "s|^persistent_peers *=.*|persistent_peers = \"\"|" $HOME/.safrochain/config/config.toml
+sed -i -e "s|^persistent_peers *=.*|persistent_peers = \"$PEERS\"|" $HOME/.safrochain/config/config.toml
 ```
 
 ---
