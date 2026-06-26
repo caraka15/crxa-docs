@@ -132,6 +132,12 @@ sed -i -e "s/^min-retain-blocks *=.*/min-retain-blocks = 100000/" $HOME/.safroch
 sed -i 's|minimum-gas-prices =.*|minimum-gas-prices = "0.05usaf"|g' $HOME/.safrochain/config/app.toml
 sed -i -e "s/prometheus = false/prometheus = true/" $HOME/.safrochain/config/config.toml
 sed -i -e "s/^indexer *=.*/indexer = \"null\"/" $HOME/.safrochain/config/config.toml
+
+# Enable API & CORS
+sed -i -e "s/^enable = false/enable = true/" $HOME/.safrochain/config/app.toml
+sed -i -e "s/^swagger = false/swagger = true/" $HOME/.safrochain/config/app.toml
+sed -i -e "s/^enabled-unsafe-cors = false/enabled-unsafe-cors = true/" $HOME/.safrochain/config/app.toml
+sed -i -e 's/cors_allowed_origins = \[\]/cors_allowed_origins = \["\*"\]/' $HOME/.safrochain/config/config.toml
 ```
 
 ---
