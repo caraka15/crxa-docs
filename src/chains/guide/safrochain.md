@@ -83,13 +83,12 @@ curl -Ls https://cdn.crxanode.com/safrochain/addrbook.json > $HOME/.safrochain/c
 
 ---
 
-## 🌱 Configure Seeds & Peers
+## 🌱 Configure Seeds
 
 ```bash
 SEEDS="bc772fdc9749e6dfd200a9428f07d86fe4fd34ec@seed.safrochain.network:26666,d323d296ba55e89fb6ce1a724f8da1740bd8cbb0@seed2.safrochain.network:26670"
-PEERS="1d6749ca7d5f5276829ab492c3f214cd271cb8f9@safrochain-rpc.crxanode.com:28656"
 sed -i -e "s|^seeds *=.*|seeds = \"$SEEDS\"|" $HOME/.safrochain/config/config.toml
-sed -i -e "s|^persistent_peers *=.*|persistent_peers = \"$PEERS\"|" $HOME/.safrochain/config/config.toml
+sed -i -e "s|^persistent_peers *=.*|persistent_peers = \"\"|" $HOME/.safrochain/config/config.toml
 ```
 
 ---
@@ -132,12 +131,6 @@ sed -i -e "s/^min-retain-blocks *=.*/min-retain-blocks = 100000/" $HOME/.safroch
 sed -i 's|minimum-gas-prices =.*|minimum-gas-prices = "0.05usaf"|g' $HOME/.safrochain/config/app.toml
 sed -i -e "s/prometheus = false/prometheus = true/" $HOME/.safrochain/config/config.toml
 sed -i -e "s/^indexer *=.*/indexer = \"null\"/" $HOME/.safrochain/config/config.toml
-
-# Enable API & CORS
-sed -i -e "s/^enable = false/enable = true/" $HOME/.safrochain/config/app.toml
-sed -i -e "s/^swagger = false/swagger = true/" $HOME/.safrochain/config/app.toml
-sed -i -e "s/^enabled-unsafe-cors = false/enabled-unsafe-cors = true/" $HOME/.safrochain/config/app.toml
-sed -i -e 's/cors_allowed_origins = \[\]/cors_allowed_origins = \["\*"\]/' $HOME/.safrochain/config/config.toml
 ```
 
 ---
