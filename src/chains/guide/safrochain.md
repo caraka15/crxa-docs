@@ -181,6 +181,32 @@ sudo systemctl restart safrochaind && sudo journalctl -u safrochaind -fo cat
 
 ---
 
+## 🔄 State-Sync (Optional)
+
+Instead of downloading a huge snapshot, you can sync your node in minutes using State-Sync.
+
+```bash
+sudo systemctl stop safrochaind
+safrochaind tendermint unsafe-reset-all --home $HOME/.safrochain --keep-addr-book
+
+RPC="https://safrochain-rpc.crxanode.com:443"
+RECENT_BLOCK=$(curl -s $RPC/block | jq -r .result.block.header.height)
+TRUST_HEIGHT=$((RECENT_BLOCK - 2000))
+TRUST_HASH=$(curl -s "$RPC/block?height=$TRUST_HEIGHT" | jq -r .result.block_id.hash)
+
+echo "TRUST HEIGHT: $TRUST_HEIGHT"
+echo "TRUST HASH: $TRUST_HASH"
+
+sed -i -e "s|^enable *=.*|enable = true|" $HOME/.safrochain/config/config.toml
+sed -i -e "s|^rpc_servers *=.*|rpc_servers = \"$RPC,$RPC\"|" $HOME/.safrochain/config/config.toml
+sed -i -e "s|^trust_height *=.*|trust_height = $TRUST_HEIGHT|" $HOME/.safrochain/config/config.toml
+sed -i -e "s|^trust_hash *=.*|trust_hash = \"$TRUST_HASH\"|" $HOME/.safrochain/config/config.toml
+
+sudo systemctl restart safrochaind && sudo journalctl -u safrochaind -fo cat
+```
+
+---
+
 ## 🔑 Create or Restore Wallet
 
 **Create new wallet and save your mnemonics securely:**
