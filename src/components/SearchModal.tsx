@@ -109,18 +109,35 @@ export const SearchModal = ({ isOpen, onClose, content }: SearchModalProps) => {
   }, [query, content]);
 
   const scrollToResult = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      const headerOffset = 80; // Adjusted for extra padding
+    onClose();
+
+    // Beri jeda mikro agar modal unmount/fadeout tidak mengunci scroll browser
+    setTimeout(() => {
+      const element = document.getElementById(id);
+      if (!element) return;
+
+      // Ambil tinggi riil navbar mengambang saat ini (responsif desktop & mobile)
+      const floatingHeader = document.querySelector('header');
+      const navHeight = floatingHeader ? floatingHeader.getBoundingClientRect().height : 80;
+      
+      // Tambahkan buffer aman 24px agar elemen berada lega di bawah navbar
+      const safeBuffer = window.innerWidth < 768 ? 20 : 32;
+      const totalOffset = navHeight + safeBuffer;
+
       const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      const offsetPosition = elementPosition + window.pageYOffset - totalOffset;
 
       window.scrollTo({
-        top: offsetPosition,
+        top: Math.max(0, offsetPosition),
         behavior: 'smooth'
       });
-      onClose();
-    }
+
+      // Efek highlight visual sementara agar user langsung mengenali lokasi hasil pencarian
+      element.classList.add('search-highlight-pulse');
+      setTimeout(() => {
+        element.classList.remove('search-highlight-pulse');
+      }, 2000);
+    }, 100);
   };
 
   if (!isOpen) return null;

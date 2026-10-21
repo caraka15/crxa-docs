@@ -1,9 +1,20 @@
 {
   "locations": [
     {
+      "name": "agent.crxanode.com",
+      "endpoint": "agent.crxanode.com",
+      "ip": "172.67.158.72",
+      "coordinates": [
+        -79.3832,
+        43.6532
+      ],
+      "city": "Toronto",
+      "country": "Canada"
+    },
+    {
       "name": "cdn.crxanode.com",
       "endpoint": "cdn.crxanode.com",
-      "ip": "172.67.150.27",
+      "ip": "104.21.73.60",
       "coordinates": [
         -79.3832,
         43.6532
@@ -14,40 +25,40 @@
     {
       "name": "crxanode.com",
       "endpoint": "crxanode.com",
-      "ip": "47.237.104.208",
+      "ip": "216.198.79.1",
       "coordinates": [
-        103.82,
-        1.35208
+        -84.3791,
+        33.8541
       ],
-      "city": "Singapore",
-      "country": "Singapore"
+      "city": "Atlanta",
+      "country": "United States"
     },
     {
       "name": "docs.crxanode.com",
       "endpoint": "docs.crxanode.com",
-      "ip": "64.29.17.1",
+      "ip": "64.29.17.65",
       "coordinates": [
         -117.86,
         34.0119
       ],
       "city": "Walnut",
       "country": "United States"
+    },
+    {
+      "name": "drive.crxanode.com",
+      "endpoint": "drive.crxanode.com",
+      "ip": "159.195.22.69",
+      "coordinates": [
+        11.0783,
+        49.4527
+      ],
+      "city": "Nuremberg",
+      "country": "Germany"
     },
     {
       "name": "explorer.crxanode.com",
       "endpoint": "explorer.crxanode.com",
-      "ip": "64.29.17.1",
-      "coordinates": [
-        -117.86,
-        34.0119
-      ],
-      "city": "Walnut",
-      "country": "United States"
-    },
-    {
-      "name": "files.crxanode.com",
-      "endpoint": "files.crxanode.com",
-      "ip": "172.67.150.27",
+      "ip": "172.67.158.72",
       "coordinates": [
         -79.3832,
         43.6532
@@ -58,7 +69,7 @@
     {
       "name": "hmnd-api.crxanode.com",
       "endpoint": "hmnd-api.crxanode.com",
-      "ip": "165.22.48.89",
+      "ip": "159.223.85.220",
       "coordinates": [
         103.695,
         1.32123
@@ -67,45 +78,34 @@
       "country": "Singapore"
     },
     {
-      "name": "hmnd.crxanode.com",
-      "endpoint": "hmnd.crxanode.com",
-      "ip": "128.199.120.53",
+      "name": "mail.crxanode.com",
+      "endpoint": "mail.crxanode.com",
+      "ip": "159.195.22.69",
       "coordinates": [
-        103.695,
-        1.32123
+        11.0783,
+        49.4527
       ],
-      "city": "Singapore",
-      "country": "Singapore"
+      "city": "Nuremberg",
+      "country": "Germany"
     },
     {
-      "name": "humanode-2048.crxanode.com",
-      "endpoint": "humanode-2048.crxanode.com",
-      "ip": "64.29.17.1",
+      "name": "media.crxanode.com",
+      "endpoint": "media.crxanode.com",
+      "ip": "104.64.15.14",
       "coordinates": [
-        -117.86,
-        34.0119
+        106.8446,
+        -6.2114
       ],
-      "city": "Walnut",
-      "country": "United States"
-    },
-    {
-      "name": "humanode.crxanode.com",
-      "endpoint": "humanode.crxanode.com",
-      "ip": "128.199.120.53",
-      "coordinates": [
-        103.695,
-        1.32123
-      ],
-      "city": "Singapore",
-      "country": "Singapore"
+      "city": "Jakarta",
+      "country": "Indonesia"
     },
     {
       "name": "monitor.crxanode.com",
       "endpoint": "monitor.crxanode.com",
       "ip": "159.195.22.69",
       "coordinates": [
-        11.1617,
-        49.405
+        11.0783,
+        49.4527
       ],
       "city": "Nuremberg",
       "country": "Germany"
@@ -113,98 +113,120 @@
     {
       "name": "paxi-api.crxanode.com",
       "endpoint": "paxi-api.crxanode.com",
-      "ip": "159.195.22.69",
+      "ip": "104.21.73.60",
       "coordinates": [
-        11.1617,
-        49.405
+        -79.3832,
+        43.6532
       ],
-      "city": "Nuremberg",
-      "country": "Germany"
+      "city": "Toronto",
+      "country": "Canada"
     },
     {
       "name": "paxi-grpc.crxanode.com",
       "endpoint": "paxi-grpc.crxanode.com",
-      "ip": "159.195.22.69",
+      "ip": "104.21.73.60",
       "coordinates": [
-        11.1617,
-        49.405
+        -79.3832,
+        43.6532
       ],
-      "city": "Nuremberg",
-      "country": "Germany"
+      "city": "Toronto",
+      "country": "Canada"
     },
     {
       "name": "paxi-rpc.crxanode.com",
       "endpoint": "paxi-rpc.crxanode.com",
-      "ip": "159.195.22.69",
+      "ip": "172.67.158.72",
       "coordinates": [
-        11.1617,
-        49.405
+        -79.3832,
+        43.6532
       ],
-      "city": "Nuremberg",
-      "country": "Germany"
+      "city": "Toronto",
+      "country": "Canada"
+    },
+    {
+      "name": "payment-gateway.crxanode.com",
+      "endpoint": "payment-gateway.crxanode.com",
+      "ip": "172.67.158.72",
+      "coordinates": [
+        -79.3832,
+        43.6532
+      ],
+      "city": "Toronto",
+      "country": "Canada"
+    },
+    {
+      "name": "play.crxanode.com",
+      "endpoint": "play.crxanode.com",
+      "ip": "172.67.158.72",
+      "coordinates": [
+        -79.3832,
+        43.6532
+      ],
+      "city": "Toronto",
+      "country": "Canada"
+    },
+    {
+      "name": "playlist.crxanode.com",
+      "endpoint": "playlist.crxanode.com",
+      "ip": "178.128.118.41",
+      "coordinates": [
+        103.695,
+        1.32123
+      ],
+      "city": "Singapore",
+      "country": "Singapore"
     },
     {
       "name": "safrochain-api.crxanode.com",
       "endpoint": "safrochain-api.crxanode.com",
-      "ip": "159.195.22.69",
+      "ip": "172.67.158.72",
       "coordinates": [
-        11.1617,
-        49.405
+        -79.3832,
+        43.6532
       ],
-      "city": "Nuremberg",
-      "country": "Germany"
+      "city": "Toronto",
+      "country": "Canada"
     },
     {
       "name": "safrochain-grpc.crxanode.com",
       "endpoint": "safrochain-grpc.crxanode.com",
-      "ip": "159.195.22.69",
+      "ip": "172.67.158.72",
       "coordinates": [
-        11.1617,
-        49.405
+        -79.3832,
+        43.6532
       ],
-      "city": "Nuremberg",
-      "country": "Germany"
+      "city": "Toronto",
+      "country": "Canada"
     },
     {
       "name": "safrochain-rpc.crxanode.com",
       "endpoint": "safrochain-rpc.crxanode.com",
+      "ip": "104.21.73.60",
+      "coordinates": [
+        -79.3832,
+        43.6532
+      ],
+      "city": "Toronto",
+      "country": "Canada"
+    },
+    {
+      "name": "saweria.crxanode.com",
+      "endpoint": "saweria.crxanode.com",
       "ip": "159.195.22.69",
       "coordinates": [
-        11.1617,
-        49.405
+        11.0783,
+        49.4527
       ],
       "city": "Nuremberg",
       "country": "Germany"
-    },
-    {
-      "name": "shop-api.crxanode.com",
-      "endpoint": "shop-api.crxanode.com",
-      "ip": "143.198.211.172",
-      "coordinates": [
-        103.695,
-        1.32123
-      ],
-      "city": "Singapore",
-      "country": "Singapore"
-    },
-    {
-      "name": "shop.crxanode.com",
-      "endpoint": "shop.crxanode.com",
-      "ip": "143.198.211.172",
-      "coordinates": [
-        103.695,
-        1.32123
-      ],
-      "city": "Singapore",
-      "country": "Singapore"
     },
     {
       "name": "stable-api.crxanode.com",
       "endpoint": "stable-api.crxanode.com",
       "ip": "159.195.22.69",
       "coordinates": [
-        11.1617,
-        49.405
+        11.0783,
+        49.4527
       ],
       "city": "Nuremberg",
       "country": "Germany"
@@ -214,8 +236,8 @@
       "endpoint": "stable-grpc.crxanode.com",
       "ip": "159.195.22.69",
       "coordinates": [
-        11.1617,
-        49.405
+        11.0783,
+        49.4527
       ],
       "city": "Nuremberg",
       "country": "Germany"
@@ -225,8 +247,8 @@
       "endpoint": "stable-rpc.crxanode.com",
       "ip": "159.195.22.69",
       "coordinates": [
-        11.1617,
-        49.405
+        11.0783,
+        49.4527
       ],
       "city": "Nuremberg",
       "country": "Germany"
@@ -234,18 +256,18 @@
     {
       "name": "testnet-explorer.crxanode.com",
       "endpoint": "testnet-explorer.crxanode.com",
-      "ip": "64.29.17.65",
+      "ip": "104.21.73.60",
       "coordinates": [
-        -117.86,
-        34.0119
+        -79.3832,
+        43.6532
       ],
-      "city": "Walnut",
-      "country": "United States"
+      "city": "Toronto",
+      "country": "Canada"
     },
     {
       "name": "validator.crxanode.com",
       "endpoint": "validator.crxanode.com",
-      "ip": "165.22.48.89",
+      "ip": "159.223.85.220",
       "coordinates": [
         103.695,
         1.32123
@@ -254,28 +276,19 @@
       "country": "Singapore"
     },
     {
-      "name": "vote.crxanode.com",
-      "endpoint": "vote.crxanode.com",
-      "ip": "143.198.211.172",
+      "name": "vdo.crxanode.com",
+      "endpoint": "vdo.crxanode.com",
+      "ip": "104.64.15.14",
       "coordinates": [
-        103.695,
-        1.32123
+        106.8446,
+        -6.2114
       ],
-      "city": "Singapore",
-      "country": "Singapore"
-    },
-    {
-      "name": "www.crxanode.com",
-      "endpoint": "www.crxanode.com",
-      "ip": "47.237.104.208",
-      "coordinates": [
-        103.82,
-        1.35208
-      ],
-      "city": "Singapore",
-      "country": "Singapore"
+      "city": "Jakarta",
+      "country": "Indonesia"
     }
   ],
-  "errors": [],
-  "lastUpdated": "2025-11-18T17:03:57.324Z"
+  "errors": [
+    "live.crxanode.com: getaddrinfo ENOTFOUND live.crxanode.com"
+  ],
+  "lastUpdated": "2026-10-21T14:45:55.859Z"
 }

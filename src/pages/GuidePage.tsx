@@ -35,6 +35,20 @@ const createOgImageUrl = (title: string, subtitle: string, options: { chainSlug?
   return url.toString();
 };
 
+// Helper ekstrak teks murni dari children ReactMarkdown
+const extractRawText = (node: any): string => {
+  if (!node) return '';
+  if (typeof node === 'string') return node;
+  if (Array.isArray(node)) return node.map(extractRawText).join('');
+  if (node.props && node.props.children) return extractRawText(node.props.children);
+  return '';
+};
+
+const createSlug = (children: any): string => {
+  const text = extractRawText(children);
+  return text.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+};
+
 const GuideSkeleton = () => (
   <div className="relative bg-transparent flex flex-col">
     <div className="relative z-10 flex flex-1">
@@ -370,28 +384,25 @@ export const GuidePage = () => {
                     },
                     // Custom styling for headings with IDs
                     h1: ({ children }) => {
-                      const text = children?.toString() || '';
-                      const id = text.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+                      const id = createSlug(children);
                       return (
-                        <h1 id={id} className="text-4xl font-bold text-base-content mb-6 border-b border-base-300 pb-3 scroll-mt-24">
+                        <h1 id={id} className="text-4xl font-bold text-base-content mb-6 border-b border-base-300 pb-3 scroll-mt-28 md:scroll-mt-32">
                           {children}
                         </h1>
                       );
                     },
                     h2: ({ children }) => {
-                      const text = children?.toString() || '';
-                      const id = text.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+                      const id = createSlug(children);
                       return (
-                        <h2 id={id} className="text-2xl font-semibold text-base-content mt-8 mb-4 scroll-mt-24">
+                        <h2 id={id} className="text-2xl font-semibold text-base-content mt-8 mb-4 scroll-mt-28 md:scroll-mt-32">
                           {children}
                         </h2>
                       );
                     },
                     h3: ({ children }) => {
-                      const text = children?.toString() || '';
-                      const id = text.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+                      const id = createSlug(children);
                       return (
-                        <h3 id={id} className="text-xl font-semibold text-base-content mt-6 mb-3 scroll-mt-24">
+                        <h3 id={id} className="text-xl font-semibold text-base-content mt-6 mb-3 scroll-mt-28 md:scroll-mt-32">
                           {children}
                         </h3>
                       );

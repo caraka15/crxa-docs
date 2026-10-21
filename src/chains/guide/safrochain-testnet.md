@@ -150,7 +150,7 @@ sudo apt install lz4 -y
 sudo systemctl stop safrochaind
 cp $HOME/.safrochain/data/priv_validator_state.json $HOME/.safrochain/priv_validator_state.json.backup
 safrochaind tendermint unsafe-reset-all --home $HOME/.safrochain --keep-addr-book
-curl -L https://cdn.crxanode.com/safrochain-testnet/safrochain-latest.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.safrochain
+curl -L https://cdn.crxanode.com/safrochain-testnet/safrochain-testnet-latest.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.safrochain
 mv $HOME/.safrochain/priv_validator_state.json.backup $HOME/.safrochain/data/priv_validator_state.json
 sudo systemctl restart safrochaind && sudo journalctl -u safrochaind -fo cat
 ```

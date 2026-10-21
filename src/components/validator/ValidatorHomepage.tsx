@@ -192,9 +192,18 @@ export const ValidatorHomepage = () => {
       };
     }
 
+    // Filter validator yang aktif dan tidak error
+    const activeStats = allValidatorStats.filter(s => !s.error && s.uptime > 0);
     const totalStakeRaw = allValidatorStats.reduce((sum, s) => sum + s.totalStakeRaw, 0);
-    const avgUptime = allValidatorStats.reduce((sum, s) => sum + s.uptime, 0) / allValidatorStats.length;
-    const avgCommission = allValidatorStats.reduce((sum, s) => sum + s.commission, 0) / allValidatorStats.length;
+
+    // Rata-rata hanya dari node sehat
+    const avgUptime = activeStats.length > 0
+      ? activeStats.reduce((sum, s) => sum + s.uptime, 0) / activeStats.length
+      : 100;
+
+    const avgCommission = activeStats.length > 0
+      ? activeStats.reduce((sum, s) => sum + s.commission, 0) / activeStats.length
+      : 0;
 
     return {
       totalDelegated: totalStakeRaw.toLocaleString('en-US', { maximumFractionDigits: 0 }),
